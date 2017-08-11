@@ -19,6 +19,6 @@ class PythonDW:
         self.get_all_elements('class') 
 
     def get_all_functions(self):
-		self.get_all_elements('function')
+	self.get_all_elements('function')
 	
 
