@@ -1,4 +1,5 @@
 import ast
+from util import enum
 
 class PythonDW:
     """Python Design Wizard API"""
@@ -11,14 +12,16 @@ class PythonDW:
 		self.ast_tree = ast.parse(read_file.read())
 
     def get_all_elements(self, key='class'):
+		list_elements = []
 		for node in ast.walk(self.ast_tree):
 			if isinstance(node, self.ast_elements_dict[key]):
-				print node.name,					
+				list_elements.append(node.name)
+		return list_elements							
 
     def get_all_classes(self):
-        self.get_all_elements('class') 
+        return self.get_all_elements('class') 
 
     def get_all_functions(self):
-	self.get_all_elements('function')
+	    return self.get_all_elements('function')
 	
 
