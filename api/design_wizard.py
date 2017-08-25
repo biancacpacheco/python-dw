@@ -1,6 +1,9 @@
 import ast
-from util import type_entity_enum,type_relation_enum
+from util.type_entity_enum import EntityTypeEnum
+from util.type_relation_enum import RelationTypeEnum
 from design.relation.relation import Relation
+from design.class_node import ClassNode
+from design.function_node import FunctionNode 
 
 class PythonDW:
     """Python Design Wizard API"""
@@ -16,6 +19,14 @@ class PythonDW:
     def parse(self, file_path):
         read_file = open(file_path,'r')
         self.ast_tree = ast.parse(read_file.read())
+        
+    def get_entity_attr_by_name(self,name):
+        entity = ""
+        for element in self.entities:
+            if element.get_name() == name:
+                entity = element
+        return entity        
+                    
 
 
     # Returning nodes functions 
@@ -42,7 +53,6 @@ class PythonDW:
                     all_imports.append(single_import)
         return all_imports
    
-#PRecisa ser testado =====================
 
     def get_class_by_name(self,name):
         class_found = []
@@ -68,7 +78,6 @@ class PythonDW:
                 import_found = imp
         return import_found        
 
-#ate aqui =======================================
 
     def get_functions_inside_class(self, name):
         body,functions = [],[]
@@ -89,7 +98,7 @@ class PythonDW:
                 body = node.body
         return body			    
 
-    def get_fields_function(self,name):
+    def get_fields_function(self, name):
         fields,func_node = [],[]
         functions = self.get_all_functions()
         for node in functions:
@@ -98,7 +107,16 @@ class PythonDW:
         for element in func_node:
             fields.append(element)        
         return fields        
-                
+
+    def create_function_entity_by_name(self, name):
+        function = self.get_function_by_name(name)        
+        fields = self.get_fields_function(name)
+        entity = FunctionNode(name,fields=fields)
+        relation = Relation(function,RelationTypeEnum.HASFIELD,fields)
+        entity.relations[name] = relation
+        self.entities.append(entity)
+        
+                        
 
     # Returning strings functions 
 

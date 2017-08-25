@@ -1,4 +1,4 @@
-class TypeRelationEnum:
+class RelationTypeEnum:
 	
 	DEFINES = "DEFINES"
 	ISDEFINED = "ISDEFINED"
