@@ -1,6 +1,0 @@
-class Enum:
- DEFAULT = 0
- CLASS = 1
- FUNCTION = 2
- FIELD = 3
- PACKAGE = 4

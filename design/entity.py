@@ -1,9 +1,10 @@
-from util.enum import * 
+from util.type_entity_enum import * 
+
 class Entity:
 	
 	def __init__(self, name):
 		self.name = name
-		self.type_entity = Enum.DEFAULT
+		self.type_entity = EntityTypeEnum.DEFAULT
 		self.relations = {}
 	
 	def get_name(self):

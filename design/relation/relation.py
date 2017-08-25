@@ -1,3 +1,5 @@
+from util.type_relation_enum import *
+
 class Relation:
 	
 	def __init__(self, caller, type_relation, called):
