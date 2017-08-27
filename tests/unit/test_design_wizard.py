@@ -30,7 +30,7 @@ class TestDesignWizard(unittest.TestCase):
         self.assertNotEqual(self.dw.get_body_function("inside_func"), [])
 
     def test_get_fields_from_function(self):
-        self.assertEqual(self.dw.get_fields_function_str("func1"), ['oi'])       			
+        self.assertEqual(self.dw.get_fields_function_str("func1"), ['r_param'])       			
 
     def test_get_element_by_name(self):
         self.assertEqual(self.dw.get_class_by_name("Test").name, 'Test')
@@ -48,11 +48,16 @@ class TestDesignWizard(unittest.TestCase):
         self.assertEqual(self.dw.get_entity_attr_by_name("Empty"), empty_node)
 
 
-    def test_create_function_node(self):
+    def test_create_function_node_and_check_relation(self):
         self.dw.create_function_entity_by_name("func1")
         self.assertNotEqual(self.dw.entities, [])
         func_entity = self.dw.get_entity_attr_by_name("func1")
         self.assertEqual(func_entity.get_name(), 'func1')
+        
+        self.assertNotEqual(func_entity.relations, {})
+        
+        relation = func_entity.relations['r_param']
+        self.assertEqual(relation.get_str_relation(), 'func1 HASFIELD r_param')
         
 
 

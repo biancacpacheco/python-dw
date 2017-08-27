@@ -112,8 +112,16 @@ class PythonDW:
         function = self.get_function_by_name(name)        
         fields = self.get_fields_function(name)
         entity = FunctionNode(name,fields=fields)
-        relation = Relation(function,RelationTypeEnum.HASFIELD,fields)
-        entity.relations[name] = relation
+        relation = ""
+        for field in fields:
+            name_of_field = ""
+            try:
+                name_of_field = field.arg
+            except:
+                name_of_field = field.id    
+            
+            relation = Relation(function,RelationTypeEnum.HASFIELD,field,function.name,name_of_field)
+            entity.relations[name_of_field] = relation
         self.entities.append(entity)
         
                         

@@ -10,7 +10,7 @@ class Test2:
 		print("Something not important printed here")
 		pass
 	
-def func1(oi):
+def func1(r_param):
     func2()
     pass
 
