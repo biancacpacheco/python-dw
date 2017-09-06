@@ -1,21 +1,31 @@
 from design import entity
 from util.type_entity_enum import * 
 
-class FunctionNode(entity.Entity):
+class ParameterNode(entity.Entity):
 
-    def __init__(self, name, ast_node, parameters=[], fields=[], returns=[], function_calls=[]):
+    def __init__(self, name, ast_node):
         entity.Entity.__init__(self,name=name,ast_node=ast_node)
-        self.type_entity = EntityTypeEnum.FUNCTION
-        self.parameters = parameters 
-        self.fields = fields
-        self.returns = returns
-        self.function_calls = function_calls
+        self.type_entity = EntityTypeEnum.FIELD 
+
     
     def get_name(self):
         if self.ast_node == {}:
             return self.name
-        return self.ast_node.name 	
+        
+        node_name = ""
+        try:
+            node_name = self.ast_node.arg
+        except:
+            node_name = self.ast_node.id
+            
+        return node_name	
 
+    def set_name_to_ast_name(self):
+        try:
+            self.name = self.ast_node.arg
+        except:
+            self.name = self.ast_node.id
+            
     def add_relation(self,relation):
         relation_type = relation.get_type_relation()
         value_dict = self.relations.get(relation_type)
@@ -23,7 +33,4 @@ class FunctionNode(entity.Entity):
             self.relations[relation_type] = [relation]
         else:
             self.relations[relation_type].append(relation)
-            
-    def get_relations_by_type(self, type_relation):
-        return self.relations[type_relation]
                 

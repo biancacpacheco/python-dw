@@ -4,6 +4,7 @@ from util.type_relation_enum import RelationTypeEnum
 from design.relation.relation import Relation
 from design.class_node import ClassNode
 from design.function_node import FunctionNode 
+from design.parameter_node import ParameterNode
 
 class PythonDW:
     """Python Design Wizard API"""
@@ -11,25 +12,26 @@ class PythonDW:
     
     def __init__(self, ast_tree=[], ast_elements_dict=None):
         self.ast_tree = []
-        self.entities = []
+        self.entities = {}
         self.ast_elements_dict = {"class":ast.ClassDef, \
          "function":ast.FunctionDef, \
-         "import":ast.Import }
+         "import":ast.Import, \
+         "call":ast.Call, \
+         "expr":ast.Expr }
 		 
     def parse(self, file_path):
         read_file = open(file_path,'r')
         self.ast_tree = ast.parse(read_file.read())
         
-    def get_entity_attr_by_name(self,name):
-        entity = ""
-        for element in self.entities:
-            if element.get_name() == name:
-                entity = element
+    def get_entity_by_name(self,name):
+        entity = self.entities.get(name)
+        if entity is None:
+            entity = ""
         return entity        
-                    
+    
 
 
-    # Returning nodes functions 
+    """ Returning nodes functions """ 
 
     def get_all_elements_file(self, key='class'):
         list_elements = []
@@ -53,7 +55,6 @@ class PythonDW:
                     all_imports.append(single_import)
         return all_imports
    
-
     def get_class_by_name(self,name):
         class_found = []
         classes = self.get_all_classes()
@@ -77,7 +78,6 @@ class PythonDW:
             if imp.name == name:
                 import_found = imp
         return import_found        
-
 
     def get_functions_inside_class(self, name):
         body,functions = [],[]
@@ -107,26 +107,34 @@ class PythonDW:
         for element in func_node:
             fields.append(element)        
         return fields        
-
+ 
+    #TODO(Change this to be a side function not main)
     def create_function_entity_by_name(self, name):
         function = self.get_function_by_name(name)        
         fields = self.get_fields_function(name)
-        entity = FunctionNode(name,fields=fields)
+        function_entity = FunctionNode(name,ast_node=function,parameters=fields)
         relation = ""
         for field in fields:
-            name_of_field = ""
-            try:
-                name_of_field = field.arg
-            except:
-                name_of_field = field.id    
-            
-            relation = Relation(function,RelationTypeEnum.HASFIELD,field,function.name,name_of_field)
-            entity.relations[name_of_field] = relation
-        self.entities.append(entity)
-        
-                        
+            field_entity = ParameterNode("temporary_name", ast_node=field)
+            field_entity.set_name_to_ast_name()
+            relation = Relation(function_entity,RelationTypeEnum.HASFIELD,field_entity)
+            function_entity.add_relation(relation)
+            #self.create_parameter_entitty(parameter_entity)
+        self.entities[name] = function_entity
+    
+    def get_calls_inside_function(self,name):
+        calls = []
+        body = self.get_body_function(name)
+        for node in body:
+            if isinstance(node, self.ast_elements_dict["expr"]) and \
+             isinstance(node.value, self.ast_elements_dict["call"]):
+                calls.append(node.value)
+        return calls        
 
-    # Returning strings functions 
+
+
+    
+    """ Returning strings functions """
 
 
     def get_all_classes_str(self):
@@ -155,11 +163,7 @@ class PythonDW:
                 fields.append(e.id)
         return fields		
 
-
-    # Relation functions related
-
-
-    #TODO(Caio) Major feature
-    def add_relation(self):
-        pass			
-
+    def get_calls_inside_function_str(self,name):
+        calls = self.get_calls_inside_function(name)
+        calls_str = [e.func.id for e in calls]
+        return calls_str    
