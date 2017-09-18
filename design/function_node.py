@@ -1,21 +1,24 @@
 from design import entity
-from util.type_entity_enum import * 
+from util.type_entity_enum import EntityTypeEnum
+from util.type_relation_enum import RelationTypeEnum 
 from util.type_ast_entity_enum import AstEntityTypeEnum as ast_enum
+from design.parameter_node import ParameterNode
+from design.relation.relation import Relation
 
 class FunctionNode(entity.Entity):
 
     def __init__(self, name, ast_node, parameters=[], fields=[], \
-     returns=[], function_calls={}):
+     returns=[], function_calls={}, initialize_elements=True):
         entity.Entity.__init__(self,name=name,ast_node=ast_node)
         self.type_entity = EntityTypeEnum.FUNCTION
         self.parameters = parameters 
         self.fields = fields
         self.returns = returns
         self.function_calls = function_calls
-        
-        if ast_node != {}:
-            self.initialize_elements\
-             (parameters,fields,returns,function_calls)
+
+        if initialize_elements:
+            self.initialize_elements()
+
 
 
     """ ACCSSES AND CONTROL OF THE NODE ATTRIBUTES"""
@@ -24,6 +27,9 @@ class FunctionNode(entity.Entity):
         if self.ast_node == {}:
             return self.name
         return self.ast_node.name 	
+        
+    def get_function_fields_body(self):
+        return self.ast_node.body    
     
     def get_function_calls(self,just_caller=False,just_callee=False):
         calls = self.function_calls
@@ -39,10 +45,10 @@ class FunctionNode(entity.Entity):
             
     def get_relations_by_type(self, type_relation):
         return self.relations[type_relation]
-        
+ 
     def get_parameters_function(self): 
         return self.parameters
-        
+   
     def get_parameters_function_str(self):
         parameters = [] 
         for e in self.get_parameters_function():
@@ -60,7 +66,9 @@ class FunctionNode(entity.Entity):
          function_calls_callee = self.get_function_calls\
           (just_caller=False,just_callee=True)
          caller_str = [e.func.id for e in function_calls_caller]
-         callee_str = [e.func.id for e in function_calls_callee] 
+         callee_str = [e.name for e in function_calls_callee] 
+         
+         # If both are False or both are True
          if (not (just_caller or just_callee)) or \
            (just_caller and just_callee):
                caller = ('caller',caller_str)
@@ -71,9 +79,14 @@ class FunctionNode(entity.Entity):
          else:
              calls_str = callee_str
          
-         return calls_str              
-                      
+         return calls_str  
 
+    def set_name_to_ast_name(self):
+        self.name = self.ast_node.name
+         
+    def add_callee(self, callee):
+        self.function_calls['callee'].append(callee)
+    
     def add_relation(self,relation):
         relation_type = relation.get_type_relation()
         value_dict = self.relations.get(relation_type)
@@ -82,22 +95,24 @@ class FunctionNode(entity.Entity):
         else:
             self.relations[relation_type].append(relation)
 
+
                 
     """ INITIALIZATION FUNCTIONS HERE """
     
-    def initialize_elements\
-     (self,parameters,fields,returns,function_calls):
-         if parameters == []: 
-             self.initialize_parameters()
-         if fields == []:
-             self.initialize_fields()
-         if returns == []:
-             self.initialize_returns()
-         if function_calls == {}:
-             self.initialize_function_calls()
+    def initialize_elements(self):
+         self.initialize_parameters()
+         self.initialize_fields()
+         self.initialize_returns()
+         self.initialize_function_calls()
     
     def initialize_parameters(self):
         self.parameters = self.ast_node.args.args
+        relation = ""
+        for parameter in self.parameters:
+            parameter_entity = ParameterNode("temporary_name", ast_node=parameter)
+            parameter_entity.set_name_to_ast_name()
+            relation = Relation(self,RelationTypeEnum.HASFIELD,parameter_entity)
+            self.add_relation(relation)
     
     def initialize_fields(self):
         self.fields = self.ast_node.body
@@ -114,7 +129,7 @@ class FunctionNode(entity.Entity):
                 calls.append(node.value)
         self.function_calls['caller'] = calls
         self.function_calls['callee'] = []                     
-        
+
            
    
                          

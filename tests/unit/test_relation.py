@@ -5,7 +5,9 @@ from design.function_node import FunctionNode
 class TestRelationModule(unittest.TestCase):
 
     def test_default_values(self):
-        func_a,func_b = FunctionNode("A",{}), FunctionNode("B",{})
+        func_a,func_b = FunctionNode\
+         ("A",{}, initialize_elements=False), \
+         FunctionNode("B",{}, initialize_elements=False)
         relation_1 = Relation(func_a, "implements", func_b)
         self.assertEqual(relation_1.get_caller(), func_a)
         self.assertEqual(relation_1.get_callee(), func_b)
