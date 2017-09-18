@@ -53,6 +53,7 @@ class PythonDW:
                     all_imports.append(single_import)
         return all_imports
     
+
     #TODO(Caio) Tested but needs 'UpdateFunctionsCalls' method
     def create_function_entity(self, node):
         function_entity = FunctionNode\
@@ -64,10 +65,10 @@ class PythonDW:
         for call in calls:
             if self.get_entity_by_name(call) != "":
                 self.get_entity_by_name(call).add_callee(function_entity)
+
     
     def update_function_calls(self):
         pass
-   
    
     def get_class_by_name(self,name):
         class_found = []
