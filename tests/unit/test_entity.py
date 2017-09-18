@@ -1,6 +1,9 @@
-import unittest
+import unittest, ast
 from design import entity as entity
-from util.type_entity_enum import *
+from util.type_entity_enum import EntityTypeEnum
+from util.type_relation_enum import RelationTypeEnum
+from api.design_wizard import PythonDW
+from design.function_node import FunctionNode
 
 class TestEntityModule(unittest.TestCase):
 
@@ -19,7 +22,14 @@ class TestEntityModule(unittest.TestCase):
         self.assertEqual(str(the_exception), "Not implemented yet.")	
 
 class TestFunctionEntityModule(unittest.TestCase):
-    pass
+
+    def setUp(self):
+        self.dw = PythonDW()
+        self.dw.parse("tests/data/function_module.py")
+        
+    def test_random(self):
+        self.assertTrue(True)    
+
 
 
 class TestParameterEntityModule(unittest.TestCase):
@@ -29,5 +39,12 @@ class TestClassEntityModule(unittest.TestCase):
     pass 
 
 if __name__ == '__main__':
+    print("\n== Testing General Entity ==")
+    
     suite = unittest.TestLoader().loadTestsFromTestCase(TestEntityModule)
-    unittest.TextTestRunner(verbosity=2).run(suite)        
+    unittest.TextTestRunner(verbosity=2).run(suite) 
+    
+    print("\n== Testing Function entity ==")
+
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestFunctionEntityModule)
+    unittest.TextTestRunner(verbosity=2).run(suite)             

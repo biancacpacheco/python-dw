@@ -11,7 +11,7 @@ class PythonDW:
     """Python Design Wizard API"""
     
     
-    def __init__(self, ast_tree=[], ast_elements_dict=None):
+    def __init__(self):
         self.ast_tree = []
         self.entities = {}
         self.ast_elements_dict = AstEntityTypeEnum.ast_entity_dict
@@ -29,6 +29,7 @@ class PythonDW:
 
 
     """ Returning nodes functions """ 
+
 
     def get_all_elements_file(self, key='class'):
         list_elements = []
@@ -51,6 +52,22 @@ class PythonDW:
                 if single_import not in all_imports:
                     all_imports.append(single_import)
         return all_imports
+    
+    #TODO(Caio) Tested but needs 'UpdateFunctionsCalls' method
+    def create_function_entity(self, node):
+        function_entity = FunctionNode\
+         ("temporary_name", ast_node=node)
+        function_entity.set_name_to_ast_name()
+        name = function_entity.get_name() 
+        self.entities[name] = function_entity
+        calls = function_entity.get_function_calls_str(just_caller=True)
+        for call in calls:
+            if self.get_entity_by_name(call) != "":
+                self.get_entity_by_name(call).add_callee(function_entity)
+    
+    def update_function_calls(self):
+        pass
+   
    
     def get_class_by_name(self,name):
         class_found = []
@@ -75,7 +92,8 @@ class PythonDW:
             if imp.name == name:
                 import_found = imp
         return import_found        
-
+    
+    #TODO(Caio) Move this inside class node
     def get_functions_inside_class(self, name):
         body,functions = [],[]
         classes = self.get_all_classes()
@@ -87,47 +105,9 @@ class PythonDW:
                 functions.append(node)
         return functions		
 					 
-    def get_body_function(self, name):
-        body = []
-        functions = self.get_all_functions()
-        for node in functions:
-            if node.name == name:
-                body = node.body
-        return body			    
-
-    def get_fields_function(self, name):
-        fields,func_node = [],[]
-        functions = self.get_all_functions()
-        for node in functions:
-            if node.name == name:
-                func_node = node.args.args
-        for element in func_node:
-            fields.append(element)        
-        return fields        
- 
-    #TODO(Change this to be a side function not main)
     def create_function_entity_by_name(self, name):
-        function = self.get_function_by_name(name)        
-        fields = self.get_fields_function(name)
-        function_entity = FunctionNode(name,ast_node=function,parameters=fields)
-        relation = ""
-        for field in fields:
-            field_entity = ParameterNode("temporary_name", ast_node=field)
-            field_entity.set_name_to_ast_name()
-            relation = Relation(function_entity,RelationTypeEnum.HASFIELD,field_entity)
-            function_entity.add_relation(relation)
-            #self.create_parameter_entitty(parameter_entity)
-        self.entities[name] = function_entity
-    
-    def get_calls_inside_function(self,name):
-        calls = []
-        body = self.get_body_function(name)
-        for node in body:
-            if isinstance(node, self.ast_elements_dict["expr"]) and \
-             isinstance(node.value, self.ast_elements_dict["call"]):
-                calls.append(node.value)
-        return calls        
-
+        function_node = self.get_function_by_name(name)
+        self.create_function_entity(function_node)
 
 
     
@@ -149,18 +129,4 @@ class PythonDW:
     def get_functions_inside_class_str(self, name):
         functions = [e.name for e in self.get_functions_inside_class(name)]
         return functions
-
-    # Handleling here with incompatible definitions of field through python versions
-    def get_fields_function_str(self,name):
-        fields = [] 
-        for e in self.get_fields_function(name):
-            try:
-                fields.append(e.arg)
-            except:
-                fields.append(e.id)
-        return fields		
-
-    def get_calls_inside_function_str(self,name):
-        calls = self.get_calls_inside_function(name)
-        calls_str = [e.func.id for e in calls]
-        return calls_str    
+ 
