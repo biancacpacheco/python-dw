@@ -18,6 +18,16 @@ class TestEntityModule(unittest.TestCase):
         the_exception = cm.exception
         self.assertEqual(str(the_exception), "Not implemented yet.")	
 
+class TestFunctionEntityModule(unittest.TestCase):
+    pass
+
+
+class TestParameterEntityModule(unittest.TestCase):
+    pass    
+
+class TestClassEntityModule(unittest.TestCase):
+    pass 
+
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestEntityModule)
     unittest.TextTestRunner(verbosity=2).run(suite)        

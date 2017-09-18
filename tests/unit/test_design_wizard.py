@@ -41,8 +41,15 @@ class TestDesignWizard(unittest.TestCase):
          (self.dw.get_body_function("inside_func"), [])
 
     def test_get_fields_from_function(self):
-        self.assertEqual(self.dw.get_fields_function_str("func1"), \
-         ['r_param'])       			
+        self.dw.create_function_entity_by_name("func2")
+        function = self.dw.get_entity_by_name("func2")
+        parameters = function.get_parameters_function_str()
+        self.assertEqual(parameters, [])  
+        
+        self.dw.create_function_entity_by_name("func1")
+        function = self.dw.get_entity_by_name("func1")
+        parameters = function.get_parameters_function_str()
+        self.assertEqual(parameters, ['r_param'])        			
 
     def test_get_element_by_name(self):
         self.assertEqual(self.dw.get_class_by_name("Test").name, 'Test')
@@ -84,9 +91,15 @@ class TestDesignWizard(unittest.TestCase):
         
         
     def test_get_calls_inside_functions_body(self):
-        self.assertEqual\
-         (self.dw.get_calls_inside_function_str('func1'),['func2'])        
-
+        self.dw.create_function_entity_by_name("func1")
+        self.assertNotEqual(self.dw.entities, [])
+        func_entity = self.dw.get_entity_by_name("func1")
+        self.assertEqual(func_entity.get_function_calls_str(), \
+         [ ('caller', ['func2']), ('callee', []) ] )
+        self.assertEqual(func_entity.get_function_calls_str\
+         (just_caller=True), ['func2'])        
+        self.assertEqual(func_entity.get_function_calls_str\
+         (just_callee=True), [])
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase\

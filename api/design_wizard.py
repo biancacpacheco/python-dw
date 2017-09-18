@@ -1,6 +1,7 @@
 import ast
 from util.type_entity_enum import EntityTypeEnum
 from util.type_relation_enum import RelationTypeEnum
+from util.type_ast_entity_enum import AstEntityTypeEnum
 from design.relation.relation import Relation
 from design.class_node import ClassNode
 from design.function_node import FunctionNode 
@@ -13,11 +14,7 @@ class PythonDW:
     def __init__(self, ast_tree=[], ast_elements_dict=None):
         self.ast_tree = []
         self.entities = {}
-        self.ast_elements_dict = {"class":ast.ClassDef, \
-         "function":ast.FunctionDef, \
-         "import":ast.Import, \
-         "call":ast.Call, \
-         "expr":ast.Expr }
+        self.ast_elements_dict = AstEntityTypeEnum.ast_entity_dict
 		 
     def parse(self, file_path):
         read_file = open(file_path,'r')
