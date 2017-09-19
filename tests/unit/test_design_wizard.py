@@ -31,9 +31,13 @@ class TestDesignWizard(unittest.TestCase):
         self.assertEqual(self.dw.get_all_imports_str(), \
          ['Math','unittest'])
 
-    def test_values_of_inner_functions(self):		
+    def test_values_of_inner_functions(self):
+        self.dw.create_class_entity_by_name("Test2")
+        self.assertNotEqual(self.dw.entities, [])
+        class_entity1 = self.dw.get_entity_by_name("Test2")	
+     		
         self.assertEqual\
-         (self.dw.get_functions_inside_class_str("Test2"), \
+         (class_entity1.get_functions_str(), \
          ['inside_func'])
 
     def test_body_not_empty_function(self):
@@ -104,7 +108,8 @@ class TestDesignWizard(unittest.TestCase):
         self.assertEqual(func_entity1.get_name(), 'func1')
         
         self.assertEqual\
-         (func_entity2.get_function_calls_str(just_callee=True), ['func1'])
+         (func_entity2.get_function_calls_str\
+         (just_callee=True), ['func1'])
     
     
         
@@ -121,6 +126,46 @@ class TestDesignWizard(unittest.TestCase):
         self.assertEqual(func_entity.get_function_calls_str\
          (just_callee=True), [])
          
+    def test_delete_single_element_from_entities(self):
+        self.dw.create_function_entity_by_name("func1")
+        self.dw.create_function_entity_by_name("func2")
+        self.dw.create_class_entity_by_name("Test")
+        self.dw.create_class_entity_by_name("Test2")
+        
+        self.assertNotEqual(self.dw.entities, {})
+        
+        self.assertTrue("func1" in self.dw.entities)
+        self.assertTrue("func2" in self.dw.entities)
+        self.assertTrue("Test" in self.dw.entities)
+        self.assertTrue("Test2" in self.dw.entities)
+        
+        self.dw.delete_entity_by_name("Test")
+        
+        self.assertTrue("func1" in self.dw.entities)
+        self.assertTrue("func2" in self.dw.entities)
+        self.assertTrue("Test2" in self.dw.entities)
+
+        self.assertTrue("Test" not in self.dw.entities)
+
+        
+    def test_delete_all_elements_from_entities(self):
+        self.dw.create_function_entity_by_name("func1")
+        self.dw.create_function_entity_by_name("func2")
+        self.dw.create_class_entity_by_name("Test")
+        self.dw.create_class_entity_by_name("Test2")
+        
+        self.assertNotEqual(self.dw.entities, {})
+        
+        self.assertTrue("func1" in self.dw.entities)
+        self.assertTrue("func2" in self.dw.entities)
+        self.assertTrue("Test" in self.dw.entities)
+        self.assertTrue("Test2" in self.dw.entities)
+        
+        self.dw.delete_all_entities()
+        
+        self.assertEquals(self.dw.entities, {})
+
+    
          
     def tearDown(self):
         self.dw = []

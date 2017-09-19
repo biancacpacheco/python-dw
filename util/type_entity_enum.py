@@ -5,3 +5,5 @@ class EntityTypeEnum:
  FUNCTION = "FUNCTION"
  FIELD = "FIELD"
  PACKAGE = "PACKAGE"
+ PARAMETER = "PARAMETER"
+

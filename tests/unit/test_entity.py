@@ -21,16 +21,23 @@ class TestEntityModule(unittest.TestCase):
         the_exception = cm.exception
         self.assertEqual(str(the_exception), "Not implemented yet.")	
 
+
+
 class TestFunctionEntityModule(unittest.TestCase):
 
     def setUp(self):
         self.dw = PythonDW()
         self.dw.parse("tests/data/function_module.py")
         
-    def test_random(self):
-        self.assertTrue(True)    
-
-
+    def test_dafault_values_for_empty_function(self):
+        self.dw.create_function_entity_by_name("empty_func")
+        empty_func = self.dw.get_entity_by_name("empty_func")
+        
+        self.assertEqual(empty_func.get_name(), "empty_func")     
+        self.assertEqual\
+         (empty_func.get_function_calls(just_caller=True), [])
+        self.assertEqual\
+         (empty_func.get_function_calls(just_callee=True), [])
 
 class TestParameterEntityModule(unittest.TestCase):
     pass    

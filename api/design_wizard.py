@@ -24,7 +24,15 @@ class PythonDW:
         entity = self.entities.get(name)
         if entity is None:
             entity = ""
-        return entity        
+        return entity 
+    
+    #TODO(Caio) Needs to be tested
+    def delete_entity_by_name(self, name):
+        del self.entities[name]
+        
+    #TODO(Caio) ditto 29
+    def delete_all_entities(self):
+        self.entities = {}               
     
 
 
@@ -53,6 +61,12 @@ class PythonDW:
                     all_imports.append(single_import)
         return all_imports
     
+    def create_class_entity(self, node):
+        class_entity = ClassNode("temporary_name", ast_node=node)
+        class_entity.set_name_to_ast_name()
+        name = class_entity.get_name()
+        self.entities[name] = class_entity
+        
 
     #TODO(Caio) Tested but needs 'UpdateFunctionsCalls' method
     def create_function_entity(self, node):
@@ -66,7 +80,7 @@ class PythonDW:
             if self.get_entity_by_name(call) != "":
                 self.get_entity_by_name(call).add_callee(function_entity)
 
-    
+    #TODO(Caio) Code and test
     def update_function_calls(self):
         pass
    
@@ -93,23 +107,14 @@ class PythonDW:
             if imp.name == name:
                 import_found = imp
         return import_found        
-    
-    #TODO(Caio) Move this inside class node
-    def get_functions_inside_class(self, name):
-        body,functions = [],[]
-        classes = self.get_all_classes()
-        for node in classes:
-            if node.name == name:
-                 body = node.body
-        for node in body:
-            if isinstance(node, self.ast_elements_dict['function']):
-                functions.append(node)
-        return functions		
-					 
+    				 
     def create_function_entity_by_name(self, name):
         function_node = self.get_function_by_name(name)
         self.create_function_entity(function_node)
 
+    def create_class_entity_by_name(self, name):
+        class_node = self.get_class_by_name(name)
+        self.create_class_entity(class_node)
 
     
     """ Returning strings functions """

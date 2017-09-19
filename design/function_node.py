@@ -3,6 +3,7 @@ from util.type_entity_enum import EntityTypeEnum
 from util.type_relation_enum import RelationTypeEnum 
 from util.type_ast_entity_enum import AstEntityTypeEnum as ast_enum
 from design.parameter_node import ParameterNode
+from design.field_node import FieldNode
 from design.relation.relation import Relation
 
 class FunctionNode(entity.Entity):
@@ -93,7 +94,8 @@ class FunctionNode(entity.Entity):
         if value_dict is None:
             self.relations[relation_type] = [relation]
         else:
-            self.relations[relation_type].append(relation)
+            if relation not in self.relations[relation_type]:
+                self.relations[relation_type].append(relation)
 
 
                 
@@ -109,9 +111,11 @@ class FunctionNode(entity.Entity):
         self.parameters = self.ast_node.args.args
         relation = ""
         for parameter in self.parameters:
-            parameter_entity = ParameterNode("temporary_name", ast_node=parameter)
+            parameter_entity = ParameterNode\
+             ("temporary_name", ast_node=parameter)
             parameter_entity.set_name_to_ast_name()
-            relation = Relation(self,RelationTypeEnum.HASFIELD,parameter_entity)
+            relation = Relation\
+             (self,RelationTypeEnum.HASFIELD,parameter_entity)
             self.add_relation(relation)
     
     def initialize_fields(self):
@@ -128,7 +132,13 @@ class FunctionNode(entity.Entity):
              isinstance(node.value, ast_enum.ast_entity_dict["call"]):
                 calls.append(node.value)
         self.function_calls['caller'] = calls
-        self.function_calls['callee'] = []                     
+        self.function_calls['callee'] = []
+        
+        for call in calls:
+            field = FieldNode\
+             (call.func.id, ast_node=call, is_call=True)
+            relation = Relation(self, RelationTypeEnum.CALLS, field)
+            self.add_relation(relation)                     
 
            
    

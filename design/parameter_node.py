@@ -5,7 +5,7 @@ class ParameterNode(entity.Entity):
 
     def __init__(self, name, ast_node):
         entity.Entity.__init__(self,name=name,ast_node=ast_node)
-        self.type_entity = EntityTypeEnum.FIELD 
+        self.type_entity = EntityTypeEnum.PARAMETER
 
     
     def get_name(self):
