@@ -16,12 +16,10 @@ class TestDesignWizard(unittest.TestCase):
         dw = PythonDW()
         self.assertEqual(dw.ast_tree, [])
         self.assertEqual(dw.entities, {})
-        self.assertEqual(dw.ast_elements_dict,\
-         {"class":ast.ClassDef, \
-         "function":ast.FunctionDef, \
-         "import":ast.Import, \
-         "call":ast.Call, \
-         "expr":ast.Expr })
+        self.assertTrue\
+         (set(["class","function","import","call","expression"]).\
+         issubset(set(dw.ast_elements_dict.keys())))
+
 
     def test_values_after_parse_file_get_all_functions(self):
         self.assertEqual(self.dw.get_all_classes_str(), \
@@ -30,6 +28,7 @@ class TestDesignWizard(unittest.TestCase):
          ['func1','func2', 'inside_func'])
         self.assertEqual(self.dw.get_all_imports_str(), \
          ['Math','unittest'])
+
 
     def test_values_of_inner_functions(self):
         self.dw.create_class_entity_by_name("Test2")
@@ -40,12 +39,14 @@ class TestDesignWizard(unittest.TestCase):
          (class_entity1.get_functions_str(), \
          ['inside_func'])
 
+
     def test_body_not_empty_function(self):
         self.dw.create_function_entity_by_name("inside_func")
         self.assertNotEqual(self.dw.entities, [])
         func_entity1 = self.dw.get_entity_by_name("inside_func")	
         self.assertNotEqual\
          (func_entity1.get_function_fields_body(), [])
+
 
     def test_get_parameters_from_function(self):
         self.dw.create_function_entity_by_name("func2")
@@ -58,6 +59,7 @@ class TestDesignWizard(unittest.TestCase):
         parameters = function.get_parameters_function_str()
         self.assertEqual(parameters, ['r_param'])        			
 
+
     def test_get_element_by_name(self):
         self.assertEqual(self.dw.get_class_by_name("Test").name, 'Test')
         self.assertNotEqual(self.dw.get_class_by_name("Test"), [])
@@ -69,6 +71,7 @@ class TestDesignWizard(unittest.TestCase):
         self.assertEqual\
          (self.dw.get_import_by_name("Math").name, 'Math')
         self.assertNotEqual(self.dw.get_import_by_name("Math"), [])
+
 
     def test_get_entity_attribute_by_name(self):
         empty_node = FunctionNode("Empty",{}, initialize_elements=False)
@@ -95,8 +98,11 @@ class TestDesignWizard(unittest.TestCase):
         self.assertEqual\
          (relation[ONLY_ELEMENT_LIST].get_str_relation(), \
          'func1 HASFIELD r_param')
+  
         
     def test_create_function_node_and_update_callee_status(self):
+        # Order matters here because this update command is inside
+        # node's creation.
         self.dw.create_function_entity_by_name("func2")
         self.assertNotEqual(self.dw.entities, [])
         func_entity2 = self.dw.get_entity_by_name("func2")
@@ -112,7 +118,6 @@ class TestDesignWizard(unittest.TestCase):
          (just_callee=True), ['func1'])
     
     
-        
     def test_get_calls_inside_functions_body(self):
         self.dw.create_function_entity_by_name("func1")
         self.assertNotEqual(self.dw.entities, [])
@@ -125,6 +130,7 @@ class TestDesignWizard(unittest.TestCase):
          (just_caller=True), ['func2'])        
         self.assertEqual(func_entity.get_function_calls_str\
          (just_callee=True), [])
+       
          
     def test_delete_single_element_from_entities(self):
         self.dw.create_function_entity_by_name("func1")
@@ -164,6 +170,21 @@ class TestDesignWizard(unittest.TestCase):
         self.dw.delete_all_entities()
         
         self.assertEquals(self.dw.entities, {})
+
+    def test_updating_function_calls(self):
+        self.dw.create_function_entity_by_name("func1")
+        self.dw.create_function_entity_by_name("func2")
+        self.dw.create_function_entity_by_name("inside_func")
+                
+        self.dw.update_function_calls()
+        func2 = self.dw.get_entity_by_name("func2")
+        self.assertEquals(func2.get_function_calls_str(just_callee=True),['func1'])
+
+        # Delete this      
+        i  = self.dw.get_entity_by_name("inside_func")
+        self.assertEquals(i.get_function_calls_str(just_caller=True), ['print','map'])
+        
+
 
     
          

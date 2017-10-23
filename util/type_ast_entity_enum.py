@@ -1,8 +1,22 @@
 import ast
 
 class AstEntityTypeEnum:
+    
     ast_entity_dict = {"class":ast.ClassDef, \
          "function":ast.FunctionDef, \
          "import":ast.Import, \
          "call":ast.Call, \
-         "expr":ast.Expr } 
+         "expression":ast.Expr} 
+
+    try:
+        ast_entity_dict["print"] = ast.Print
+    except:
+        pass    
+
+    
+class PrintId:
+    id = "print"
+
+class Print: 
+    func = PrintId()
+

@@ -1,6 +1,6 @@
 from util.type_entity_enum import * 
 
-class Entity:
+class Entity(object):
     
     def __init__(self, name, ast_node):
         self.name = name

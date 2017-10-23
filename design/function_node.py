@@ -2,11 +2,19 @@ from design import entity
 from util.type_entity_enum import EntityTypeEnum
 from util.type_relation_enum import RelationTypeEnum 
 from util.type_ast_entity_enum import AstEntityTypeEnum as ast_enum
+from util.type_ast_entity_enum import Print
 from design.parameter_node import ParameterNode
 from design.field_node import FieldNode
 from design.relation.relation import Relation
 
 class FunctionNode(entity.Entity):
+    
+    
+    def __new__(cls, *args, **kwds):
+        it = cls.__dict__.get("__it__")
+        cls.__it__ = it = object.__new__(cls)
+        it.__init__(*args, **kwds)
+        return it
 
     def __init__(self, name, ast_node, parameters=[], fields=[], \
      returns=[], function_calls={}, initialize_elements=True):
@@ -16,10 +24,9 @@ class FunctionNode(entity.Entity):
         self.fields = fields
         self.returns = returns
         self.function_calls = function_calls
-
+        
         if initialize_elements:
             self.initialize_elements()
-
 
 
     """ ACCSSES AND CONTROL OF THE NODE ATTRIBUTES"""
@@ -86,7 +93,8 @@ class FunctionNode(entity.Entity):
         self.name = self.ast_node.name
          
     def add_callee(self, callee):
-        self.function_calls['callee'].append(callee)
+        if callee not in self.function_calls['callee']:
+            self.function_calls['callee'].append(callee)
     
     def add_relation(self,relation):
         relation_type = relation.get_type_relation()
@@ -125,15 +133,28 @@ class FunctionNode(entity.Entity):
         pass
 
     def initialize_function_calls(self):
+        
+        self.function_calls = {"caller":[],"callee":[]}
+        
         calls = []
         body = self.ast_node.body
+        print_type = ast_enum.ast_entity_dict.get("print")
         for node in body:
-            if isinstance(node, ast_enum.ast_entity_dict["expr"]) and \
-             isinstance(node.value, ast_enum.ast_entity_dict["call"]):
-                calls.append(node.value)
+            if isinstance\
+             (node, ast_enum.ast_entity_dict["expression"]) and \
+             isinstance\
+             (node.value, ast_enum.ast_entity_dict["call"]):
+                 calls.append(node.value)
+                 
+            elif print_type is not None and isinstance\
+             (node, print_type):
+                print_instance = Print()
+                calls.append(print_instance)
+                
+
         self.function_calls['caller'] = calls
         self.function_calls['callee'] = []
-        
+                
         for call in calls:
             field = FieldNode\
              (call.func.id, ast_node=call, is_call=True)

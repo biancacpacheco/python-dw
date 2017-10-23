@@ -5,10 +5,11 @@ class Test:
 	pass
 	
 class Test2:
-	
-	def inside_func():
-		print("Something not important printed here")
-		pass
+    
+    def inside_func():
+        print("Something not important printed here")
+        map(sum,[1,2])
+        pass
 	
 def func1(r_param):
     func2()
