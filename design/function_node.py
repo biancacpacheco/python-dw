@@ -73,7 +73,8 @@ class FunctionNode(entity.Entity):
           (just_caller=True,just_callee=False)
          function_calls_callee = self.get_function_calls\
           (just_caller=False,just_callee=True)
-         caller_str = [e.func.id for e in function_calls_caller]
+         
+         caller_str = [e.name for e in function_calls_caller]
          callee_str = [e.name for e in function_calls_callee] 
          
          # If both are False or both are True
@@ -95,7 +96,9 @@ class FunctionNode(entity.Entity):
     def add_callee(self, callee):
         if callee not in self.function_calls['callee']:
             self.function_calls['callee'].append(callee)
-    
+            relation = Relation(self, RelationTypeEnum.ISCALLED, callee)
+            self.add_relation(relation)
+            
     def add_relation(self,relation):
         relation_type = relation.get_type_relation()
         value_dict = self.relations.get(relation_type)
@@ -133,9 +136,7 @@ class FunctionNode(entity.Entity):
         pass
 
     def initialize_function_calls(self):
-        
         self.function_calls = {"caller":[],"callee":[]}
-        
         calls = []
         body = self.ast_node.body
         print_type = ast_enum.ast_entity_dict.get("print")
@@ -145,24 +146,30 @@ class FunctionNode(entity.Entity):
              isinstance\
              (node.value, ast_enum.ast_entity_dict["call"]):
                  calls.append(node.value)
-                 
             elif print_type is not None and isinstance\
              (node, print_type):
                 print_instance = Print()
                 calls.append(print_instance)
                 
-
-        self.function_calls['caller'] = calls
-        self.function_calls['callee'] = []
-                
+        caller_calls = []
         for call in calls:
+            is_attribute = False
+            call_name = ""
+            if isinstance(call.func, ast_enum.ast_entity_dict["attribute"]):
+                call_name = call.func.attr
+                is_attribute = True
+            else:
+                call_name = call.func.id
             field = FieldNode\
-             (call.func.id, ast_node=call, is_call=True)
+             (call_name, ast_node=call, is_call=True, is_attribute=is_attribute)
             relation = Relation(self, RelationTypeEnum.CALLS, field)
-            self.add_relation(relation)                     
+            self.add_relation(relation)
+            caller_calls.append(field)                     
 
            
-   
+        self.function_calls['caller'] = caller_calls
+        self.function_calls['callee'] = []
+           
                          
 
 

@@ -6,7 +6,9 @@ class AstEntityTypeEnum:
          "function":ast.FunctionDef, \
          "import":ast.Import, \
          "call":ast.Call, \
-         "expression":ast.Expr} 
+         "expression":ast.Expr,
+         "attribute": ast.Attribute,
+         "name": ast.Name} 
 
     try:
         ast_entity_dict["print"] = ast.Print

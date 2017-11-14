@@ -105,7 +105,6 @@ class PythonDW:
         name = class_entity.get_name()
         self.entities[name] = class_entity
         
-    #TODO(Caio) Needs update relation
     def create_function_entity(self, node):
         function_entity = FunctionNode\
          ("temporary_name", ast_node=node)
@@ -115,12 +114,15 @@ class PythonDW:
         # Only creates if is not in entity dict 
         if self.get_entity_by_name(name) == "":
             self.entities[name] = function_entity
-            calls = function_entity.get_function_calls_str(just_caller=True)
+            calls = function_entity.get_function_calls_str\
+             (just_caller=True)
             for call in calls:
                 if self.get_entity_by_name(call) != "":
-                    self.get_entity_by_name(call).add_callee(function_entity)
+                    self.get_entity_by_name(call).add_callee\
+                     (function_entity)
                 elif self.get_function_by_name(call) != []:
-                    node_function_callee = self.get_function_by_name(call) 
+                    node_function_callee = \
+                     self.get_function_by_name(call) 
                     classe = function_entity.__class__ 
                     function_callee = classe\
                      ("temporary_name2", ast_node=node_function_callee)
@@ -129,9 +131,7 @@ class PythonDW:
                     function_callee.add_callee(function_entity)
                     self.entities[callee_name] = function_callee
 
-                       
-    def update_function_calls(self):
-        pass
+
 
     """ Returning strings functions """
 
@@ -149,6 +149,7 @@ class PythonDW:
         return imports
 
     def get_functions_inside_class_str(self, name):
-        functions = [e.name for e in self.get_functions_inside_class(name)]
+        functions = \
+         [e.name for e in self.get_functions_inside_class(name)]
         return functions
  

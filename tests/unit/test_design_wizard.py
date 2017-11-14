@@ -175,15 +175,16 @@ class TestDesignWizard(unittest.TestCase):
         self.dw.create_function_entity_by_name("func1")
         self.dw.create_function_entity_by_name("func2")
         self.dw.create_function_entity_by_name("inside_func")
-                
-        self.dw.update_function_calls()
         func2 = self.dw.get_entity_by_name("func2")
-        self.assertEquals(func2.get_function_calls_str(just_callee=True),['func1'])
-
-        # Delete this      
-        i  = self.dw.get_entity_by_name("inside_func")
-        self.assertEquals(i.get_function_calls_str(just_caller=True), ['print','map'])
         
+        self.assertEquals\
+         (func2.get_function_calls_str(just_callee=True),['func1'])
+         
+        i =  self.dw.get_entity_by_name("inside_func")
+        self.assertEquals\
+         (i.get_function_calls_str(just_caller=True),['print','map','sort'])
+           
+
 
 
     
