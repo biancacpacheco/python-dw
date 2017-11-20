@@ -27,6 +27,15 @@ class PythonDW:
         if entity is None:
             entity = ""
         return entity 
+        
+    def get_entity_by_type(self,type_entity):
+        entities_return = []
+        entities = self.entities
+        for k,v in entities.items():
+            if isinstance(v,type_entity):
+                entities_return.append(v)
+        return entities_return        
+            
     
     def delete_entity_by_name(self, name):
         del self.entities[name]
