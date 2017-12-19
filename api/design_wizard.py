@@ -6,6 +6,7 @@ from util.type_ast_entity_enum import AstEntityTypeEnum
 from design.relation.relation import Relation
 from design.class_node import ClassNode
 from design.function_node import FunctionNode 
+from design.field_node import FieldNode
 from design.parameter_node import ParameterNode
 
 
@@ -22,6 +23,10 @@ class PythonDW:
         read_file = open(file_path,'r')
         self.ast_tree = ast.parse(read_file.read())
         
+        for node in ast.walk(self.ast_tree):
+            for child in ast.iter_child_nodes(node):
+                child.parent = node
+        
     def get_entity_by_name(self,name):
         entity = self.entities.get(name)
         if entity is None:
@@ -34,6 +39,8 @@ class PythonDW:
         for k,v in entities.items():
             if isinstance(v,type_entity):
                 entities_return.append(v)
+            elif isinstance(v,FieldNode) and (type(v) == type([])):
+                entities_return += v    
         return entities_return        
             
     
@@ -53,7 +60,13 @@ class PythonDW:
         for node in ast.walk(self.ast_tree): 
             if isinstance(node, self.ast_elements_dict[key]):
                 list_elements.append(node)
-        return list_elements							
+        return list_elements
+    
+    def get_all_fields_without_class_func(self):
+        return self.get_all_elements_file('augassign') + \
+         self.get_all_elements_file('assign') + \
+         self.get_all_elements_file('call')
+         					
 
     def get_all_classes(self):
         return self.get_all_elements_file('class')
@@ -139,7 +152,33 @@ class PythonDW:
                     callee_name = function_callee.get_name() 
                     function_callee.add_callee(function_entity)
                     self.entities[callee_name] = function_callee
+    
+    def create_field_entity(self,node):
+        parent = node.parent
+        grand_parent = {}
+        field_node = {}
+        if not isinstance(parent, ast.Module):
+            grand_parent = parent.parent
+        if isinstance(node, self.ast_elements_dict['assign']) or \
+         isinstance(node, self.ast_elements_dict['augassign']): 
+            node = node.value
+        if isinstance(node, self.ast_elements_dict['call']):
+            if isinstance(node, self.ast_elements_dict['attribute']):
+                field_node = FieldNode("attr", ast_node=node, is_call=True, is_attribute=True)
+            else:
+                field_node = FieldNode("call", ast_node=node, is_call=True, is_attribute=False)
 
+            field_node.set_name_to_ast_name()
+            if not (isinstance(parent, self.ast_elements_dict['function']) or \
+             isinstance(grand_parent, self.ast_elements_dict['function']) or \
+             isinstance(parent, self.ast_elements_dict['assign']) or \
+             isinstance(parent, self.ast_elements_dict['augassign']) ):
+                if self.entities.get(field_node.get_name()) is None:
+                    self.entities[field_node.get_name()] = [field_node]
+                else:
+                    self.entities[field_node.get_name()].append(field_node)
+                            
+        
 
 
     """ Returning strings functions """

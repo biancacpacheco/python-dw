@@ -1,52 +1,74 @@
 from api.design_wizard import PythonDW
 from design.function_node import FunctionNode 
+from design.field_node import FieldNode 
+
+import json 
+import glob 
+
+restrict_json = json.load(open('./demo/restrict.json'))
+
 
 print("\n")
-print("======Welcome to Python Design Wizard demo==============")
+print("======Type the name of directory to use Python DW=============")
 print("\n")
 
-file_to_parser = input("Enter the path to the file here: ")
+directory = raw_input("Directory: ")
 
-print("\n")
-print("======Initializing Python Design Wizard ...=============")
-print("\n")
 
-dw = PythonDW()
-dw.parse(file_to_parser)
+files = glob.glob('./{0}/*.py'.format(directory))
 
-for e in dw.get_all_functions():
-    dw.create_function_entity(e)
-    
-print("Done!")    
+for file_to_parser in files:
+    print("\n")
+    print("========================================================")    
+    print("======Initializing Python Design Wizard ...=============")
+    print("======File: {0}=============".format(file_to_parser))
+    print("========================================================")     
+    print("\n")
 
-print("\n")
-print("===========Restrict functions by name...================")
-print("\n")
-    
-functions_to_filter = input\
- ("Enter the name of the functions to be " + \
- "restricted in files (separeted by space): ").split()
+    dw = PythonDW()
+    dw.parse(file_to_parser)
 
-entities_dw = dw.get_entity_by_type(FunctionNode)
+    for e in dw.get_all_functions():
+        dw.create_function_entity(e)
 
-print("\n")
-print("=========Filtering entities with the functions==========")
-print("\n")    
+    for e in dw.get_all_fields_without_class_func():
+        dw.create_field_entity(e)
+             
 
-functions_with_violations = {}
+    print("\n")
+    print("===========Loading restricted functions...================")
+    print("\n")
+        
+    functions_to_filter = restrict_json["functions_not_allowed"]
 
-for e in entities_dw:
-    functions_with_violations[e.get_name()] = []
-    for call in e.get_function_calls_str(just_caller=True):
-        if call in functions_to_filter:
-            functions_with_violations[e.get_name()].append(call)
+    func_entities_dw = dw.get_entity_by_type(FunctionNode)
+    field_entities_dw = dw.entities.keys()
 
-print("Done!")
+    print("\n")
+    print("=========Filtering entities with the functions==========")
+    print("\n")    
 
-print("\n")
-print("======The following entities broke the restriction======")
-print("\n")                
+    functions_with_violations = {}
 
-for k,v in functions_with_violations.items():
-    print("{0} : {1}".format(k,v))    
+    for e in func_entities_dw:
+        functions_with_violations[e.get_name()] = []
+        for call in e.get_function_calls_str(just_caller=True):
+            if call in functions_to_filter:
+                functions_with_violations[e.get_name()].append(call)
+
+    for e in field_entities_dw:
+        if e in functions_to_filter:
+            for field in dw.entities[e]:
+                functions_with_violations[field.get_parent_name()] = e
+
+
+
+    print("Done!")
+
+    print("\n")
+    print("======The following entities broke the restriction======")
+    print("\n")                
+
+    for k,v in functions_with_violations.items():
+        print("{0} : {1}".format(k,v))    
 

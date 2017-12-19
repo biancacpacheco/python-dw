@@ -14,9 +14,14 @@ class FieldNode(Entity):
         return self.name        
 
     def set_name_to_ast_name(self):
-        if is_call and is_attribute:
-            self.name = self.ast_node.func.attr
-        elif is_call:
-            self.name = self.ast_node.func.id    
+        if self.is_call:
+            try:
+                self.name = self.ast_node.func.attr
+            except:
+                self.name = self.ast_node.func.id
             
-            
+    def get_parent_name(self):
+        if self.is_call and not \
+          isinstance(self.ast_node.parent, ast_enum.ast_entity_dict['module']):
+              return self.ast_node.parent.targets[0].id
+                    

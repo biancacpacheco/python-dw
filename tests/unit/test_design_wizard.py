@@ -184,8 +184,15 @@ class TestDesignWizard(unittest.TestCase):
         self.assertEquals\
          (i.get_function_calls_str(just_caller=True),['print','map','sort'])
            
-
-
+    def test_get_expression_nodes(self):
+        fields = self.dw.get_all_fields_without_class_func()
+        fields_str = []
+        for e in fields:
+            self.dw.create_field_entity(e)
+        self.assertEquals(list(self.dw.entities.keys()), ['sort','sum'])
+        
+    def test_get_entity_by_type(self):
+        pass    
 
     
          
