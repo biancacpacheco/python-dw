@@ -13,7 +13,9 @@ class AstEntityTypeEnum:
          "store": ast.Store, \
          "assign": ast.Assign, \
          "augassign": ast.AugAssign, \
-         "module" : ast.Module
+         "module" : ast.Module, \
+         "for" : ast.For, \
+         "while" : ast.While
          } 
 
     try:

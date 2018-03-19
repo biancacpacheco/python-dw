@@ -65,7 +65,8 @@ class PythonDW:
     def get_all_fields_without_class_func(self):
         return self.get_all_elements_file('augassign') + \
          self.get_all_elements_file('assign') + \
-         self.get_all_elements_file('call')
+         self.get_all_elements_file('call') + \
+         self.get_all_elements_file('for')
          					
 
     def get_all_classes(self):
@@ -153,12 +154,20 @@ class PythonDW:
                     function_callee.add_callee(function_entity)
                     self.entities[callee_name] = function_callee
     
-    def create_field_entity(self,node):
+    def create_field_entity(self,node):  
         parent = node.parent
         grand_parent = {}
         field_node = {}
         if not isinstance(parent, ast.Module):
             grand_parent = parent.parent
+        if isinstance(node, self.ast_elements_dict['for']):
+            field_node = FieldNode("for", ast_node=node, is_loop=True)
+            if self.entities.get("for") is None:
+                field_node.set_name("for1")                
+                self.entities["for"] = [field_node]
+            else:
+                field_node.set_name(str(len(self.entities["for"]) + 1))
+                self.entities["for"].append(field_node)    
         if isinstance(node, self.ast_elements_dict['assign']) or \
          isinstance(node, self.ast_elements_dict['augassign']): 
             node = node.value
@@ -177,8 +186,8 @@ class PythonDW:
                     self.entities[field_node.get_name()] = [field_node]
                 else:
                     self.entities[field_node.get_name()].append(field_node)
-                            
-        
+
+            
 
 
     """ Returning strings functions """

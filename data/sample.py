@@ -9,3 +9,8 @@ def func1():
 def func2():
     min([])
     print("")    
+a = []
+
+for e in range(10):
+    for i in a:
+        pass

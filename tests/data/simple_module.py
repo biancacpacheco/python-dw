@@ -27,3 +27,6 @@ def func1(r_param):
 def func2():
 	pass		
 
+for e in range(10):
+    for i in range(10):
+        print(i)

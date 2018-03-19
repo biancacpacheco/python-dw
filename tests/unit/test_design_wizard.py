@@ -189,13 +189,21 @@ class TestDesignWizard(unittest.TestCase):
         fields_str = []
         for e in fields:
             self.dw.create_field_entity(e)
-        self.assertEquals(list(self.dw.entities.keys()), ['sort','sum'])
+        self.assertEquals(list(self.dw.entities.keys()), ['sort','sum', 'range', 'for'])
+   
+    def test_nested_for(self):
+        fields = self.dw.get_all_fields_without_class_func()
+        fields_str = []
+        for e in fields:
+            self.dw.create_field_entity(e)
+        for x in self.dw.entities.get('for'):
+            fields_str += x.get_nested_loops()
+            
+        self.assertTrue(fields_str != [])
         
-    def test_get_entity_by_type(self):
-        pass    
+                
+             
 
-    
-         
     def tearDown(self):
         self.dw = []
              

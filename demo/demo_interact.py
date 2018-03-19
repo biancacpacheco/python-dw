@@ -4,15 +4,26 @@ from design.field_node import FieldNode
 
 import json 
 import glob 
+import sys 
 
-restrict_json = json.load(open('./demo/restrict.json'))
+
+if len(sys.argv) != 3:
+    print("======Run the script with 'python -m demo.demo_interact path/to/json dir/to/parse'=============")
+    print("Exiting script")
+    exit(1)
+    
+json_path, directory = sys.argv[1], sys.argv[2]    
+
+# './demo/restrict.json'
+
+restrict_json = json.load(open(json_path))
 
 
 print("\n")
 print("======Type the name of directory to use Python DW=============")
 print("\n")
 
-directory = raw_input("Directory: ")
+print("Directory: " + directory)
 
 
 files = glob.glob('./{0}/*.py'.format(directory))
@@ -60,7 +71,8 @@ for file_to_parser in files:
         if e in functions_to_filter:
             for field in dw.entities[e]:
                 functions_with_violations[field.get_parent_name()] = e
-
+    
+    print(dw.entities)
 
 
     print("Done!")
