@@ -30,3 +30,8 @@ def func2():
 for e in range(10):
     for i in range(10):
         print(i)
+        b[0] = a[1]
+
+
+
+

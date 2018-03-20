@@ -4,12 +4,16 @@ from util.type_ast_entity_enum import AstEntityTypeEnum as ast_enum
 
 class FieldNode(Entity):
 	
-    def __init__(self, name, ast_node, is_call=False, is_attribute=False, is_loop=False):
+    def __init__(self, name, ast_node, is_call=False, is_attribute=False, \
+     is_loop=False, is_tuple=False, is_subscript=False, is_index=False):
         Entity.__init__(self, name=name, ast_node=ast_node)
         self.type_entity = EntityTypeEnum.FIELD
         self.is_call = is_call
         self.is_attribute = is_attribute
         self.is_loop = is_loop
+        self.is_tuple = is_tuple
+        self.is_subscript = is_subscript
+        self.is_index = is_index
         self.body = {}
         
         if is_loop:

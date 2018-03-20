@@ -50,24 +50,42 @@ class PythonDW:
     def delete_all_entities(self):
         self.entities = {}               
     
-
+    def is_leaf_from_branch(self, branch_node, leaf):
+        response = False
+        while (not isinstance(leaf.ast_node, self.ast_elements_dict['module'])):
+            if leaf.ast_node.parent != branch_node.ast_node:
+                leaf.ast_node = leaf.ast_node.parent
+            else:
+                response = True
+                break
+        return response            
 
     """ Returning nodes functions """ 
 
 
-    def get_all_elements_file(self, key='class'):
+    def get_all_elements_file(self, key):
         list_elements = []
         for node in ast.walk(self.ast_tree): 
             if isinstance(node, self.ast_elements_dict[key]):
                 list_elements.append(node)
         return list_elements
     
+    def get_everything(self):
+        list_elements = []
+        for node in ast.walk(self.ast_tree):
+            list_elements.append(node)
+        return list_elements    
+    
     def get_all_fields_without_class_func(self):
         return self.get_all_elements_file('augassign') + \
          self.get_all_elements_file('assign') + \
          self.get_all_elements_file('call') + \
-         self.get_all_elements_file('for')
-         					
+         self.get_all_elements_file('for') + \
+         self.get_all_elements_file('load') + \
+         self.get_all_elements_file('store') + \
+         self.get_all_elements_file('index') + \
+         self.get_all_elements_file('subscript')
+          					
 
     def get_all_classes(self):
         return self.get_all_elements_file('class')
@@ -159,15 +177,17 @@ class PythonDW:
         grand_parent = {}
         field_node = {}
         if not isinstance(parent, ast.Module):
-            grand_parent = parent.parent
+            grand_parent = parent.parent            
+            
         if isinstance(node, self.ast_elements_dict['for']):
             field_node = FieldNode("for", ast_node=node, is_loop=True)
             if self.entities.get("for") is None:
                 field_node.set_name("for1")                
                 self.entities["for"] = [field_node]
             else:
-                field_node.set_name(str(len(self.entities["for"]) + 1))
-                self.entities["for"].append(field_node)    
+                field_node.set_name('for'+ str(len(self.entities["for"]) + 1))
+                self.entities["for"].append(field_node)  
+                  
         if isinstance(node, self.ast_elements_dict['assign']) or \
          isinstance(node, self.ast_elements_dict['augassign']): 
             node = node.value
@@ -186,6 +206,21 @@ class PythonDW:
                     self.entities[field_node.get_name()] = [field_node]
                 else:
                     self.entities[field_node.get_name()].append(field_node)
+        else:
+            if isinstance(node, self.ast_elements_dict['index']):
+                field_node = FieldNode("index", ast_node=node, is_index=True)
+            elif isinstance(node, self.ast_elements_dict['subscript']):
+                field_node = FieldNode("subscript", ast_node=node, is_subscript=True)
+            elif isinstance(node, self.ast_elements_dict['tuple']):      
+                field_node = FieldNode("tuple", ast_node=node, is_subscript=True)
+            
+            
+            if field_node != {}:
+                if self.entities.get("assign_field") is None:
+                    self.entities["assign_field"] = [field_node]
+                else:
+                    self.entities["assign_field"].append(field_node)                  
+                              
 
             
 

@@ -189,20 +189,27 @@ class TestDesignWizard(unittest.TestCase):
         fields_str = []
         for e in fields:
             self.dw.create_field_entity(e)
-        self.assertEquals(list(self.dw.entities.keys()), ['sort','sum', 'range', 'for'])
+        self.assertEquals(list(self.dw.entities.keys()), ['sort','sum', 'range', 'assign_field', 'for'])
    
-    def test_nested_for(self):
+    def test_nested_for_sorting_algorithm(self):
+        LAST_ADDED_FOR = -1
+        LAST_ADDED_ASSIGN = -1
+        
         fields = self.dw.get_all_fields_without_class_func()
-        fields_str = []
+        nested_fields = []
         for e in fields:
             self.dw.create_field_entity(e)
         for x in self.dw.entities.get('for'):
-            fields_str += x.get_nested_loops()
-            
-        self.assertTrue(fields_str != [])
+            nested_fields += x.get_nested_loops()
+
+   
+        leaf = self.dw.entities.get('assign_field')[LAST_ADDED_ASSIGN]
+        branch = self.dw.entities.get('for')[LAST_ADDED_FOR]
+    
+        self.assertTrue( leaf.get_name() in ('tuple','subscript','index'))
+        self.assertEqual( branch.ast_node, nested_fields[LAST_ADDED_FOR] )
+        self.assertTrue( self.dw.is_leaf_from_branch(branch,leaf) )
         
-                
-             
 
     def tearDown(self):
         self.dw = []
