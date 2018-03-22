@@ -1,0 +1,45 @@
+#!/bin/bash
+
+while getopts s:f:d: option
+do
+case "${option}"
+in
+s) SCRIPTS=${OPTARG};;
+f) FUNCTIONS=${OPTARG};;
+d) DIRECTORY=${OPTARG};;
+esac
+done
+
+if [  "$1" == "help" ]; 
+then
+    echo -e "\nPython Design Wizard cli DOC: ./dw-check [-s] [-f] [-d] [help]\n
+-s [path/to/script/folder]          Folder containing the scripts
+                                    with your own design tests using 
+                                    Design Wizard API. 
+                                    (not implemented yet) \n 
+-f [./path/to/json/functions.json]  Json file containing the 
+                                    functions to be restricted 
+                                    by the Design Wizard API. \n
+-d [path/to/dir]                    Directory containing the .py
+                                    files to be parsed by the 
+                                    Design Wizard.\n
+To see more how to configure these files and use the API, 
+access https://github.com/Caio-Batista/python-dw#python-design-wizard\n" 
+    exit 1
+fi
+
+if [ -z "$DIRECTORY" -o \( -z "$SCRIPTS" -a -z "$FUNCTIONS" \) ];
+then
+    echo -e "Directory is required and at least one of restrict options.\nTo see argument options run './dw-check.sh help'"
+    exit 1
+fi
+
+if [ -z "$SCRIPTS" ];
+then
+    python2 -m demo.demo_interact "$FUNCTIONS" "$DIRECTORY" "$SCRIPTS"
+
+else 
+    python2 -m demo.demo_interact ."$SCRIPTS" "$DIRECTORY" "$SCRIPTS"
+fi
+
+

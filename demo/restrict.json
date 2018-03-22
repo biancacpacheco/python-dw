@@ -1,1 +1,1 @@
-{"functions_not_allowed":["sort", "min", "max", "map", "sum","print"]}
+{"functions_not_allowed":["sort", "min", "max", "map"]}
