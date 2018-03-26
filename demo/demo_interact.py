@@ -1,11 +1,14 @@
 from api.design_wizard import PythonDW
 from design.function_node import FunctionNode 
 from design.field_node import FieldNode 
+from tests.scripts.test_selected_scripts import TestModules
 
 import json 
 import glob 
-import sys 
-
+import sys, os 
+import subprocess
+from subprocess import call as call_sp
+import unittest
 
 def pretty_print_function_restrict(files):
     for file_to_parser in files:
@@ -32,7 +35,7 @@ def pretty_print_function_restrict(files):
         print("===========Loading restricted functions...================")
         print("\n")
             
-        functions_to_filter = restrict_json["functions_not_allowed"]
+        functions_to_filter = restrict_functions_json["functions_not_allowed"]
 
         func_entities_dw = dw.get_entity_by_type(FunctionNode)
         field_entities_dw = dw.entities.keys()
@@ -81,7 +84,7 @@ def common_print_function_restrict(files, directory):
                  
 
             
-        functions_to_filter = restrict_json["functions_not_allowed"]
+        functions_to_filter = restrict_functions_json["functions_not_allowed"]
 
         func_entities_dw = dw.get_entity_by_type(FunctionNode)
         field_entities_dw = dw.entities.keys()
@@ -115,19 +118,65 @@ def common_print_function_restrict(files, directory):
         
         print("{0} {1}".format(" ".join(test_result),file_to_parser))            
         
-    print("\n")    
+    print("\n")  
+    
+
+def common_print_scripts_restrict(scripts_files, files):
+    f = open(os.devnull, 'w')
+    
+    print("\n")
+    results = {}
+    for file_to_parse in files:
+  
+
+        dw = PythonDW()
+        dw.parse(file_to_parse)
+        
+        sufix = len(".py")
+        file_to_parse = file_to_parse[len(directory) + 1:]         
+        results[file_to_parse] = []
+        for script in scripts_files:
+            path_script = "tests.scripts.{0}".format(script[:-sufix])
+            name_test = script[:-sufix]
+
+            test_loader = unittest.TestLoader()
+            test_names = test_loader.getTestCaseNames(TestModules)
+
+            suite = unittest.TestSuite()
+            for test_name in test_names:
+                suite.addTest(TestModules(test_name, dw, path_script, name_test))
+
+            result = unittest.TextTestRunner(stream=f,descriptions=False).run(suite)
+            if result.wasSuccessful():
+                results[file_to_parse].append(".")
+            else:
+                results[file_to_parse].append(script[:-sufix])
+                
+    for k,v in results.items():
+        print("{0} {1}".format(" ".join(v),k))
+                    
+    print("\n")
+        
 
 if len(sys.argv) != 4:
-    print("======Run the script with 'python -m demo.demo_interact path/to/json dir/to/parse'=============")
+    print("======Run the script with 'python -m demo.demo_interact" +\
+     " path/to/json dir/to/parse'=============")
     print("Exiting script")
     exit(1)
     
-json_path, directory, scripts = sys.argv[1], sys.argv[2], sys.argv[3]    
+functions_json_path, directory, scripts_json_path = sys.argv[1], sys.argv[2], sys.argv[3]    
+
+restrict_functions_json, restrict_scripts_json, scripts_files = [],[],[]
 
 
-json_path = "./{0}".format(json_path)
-restrict_json = json.load(open(json_path))
-
+if functions_json_path != "" :
+    functions_json_path = "./{0}".format(functions_json_path)
+    restrict_functions_json = json.load(open(functions_json_path))
+else:
+    scripts_json_path = "{0}".format(scripts_json_path)
+    restrict_scripts_json = json.load(open(scripts_json_path))
+    scripts_files = restrict_scripts_json['scripts']
+    
 
 
 print("\nDirectory: " + directory)
@@ -135,4 +184,7 @@ print("\nDirectory: " + directory)
 directory = "./{0}".format(directory)
 files = glob.glob('{0}/*.py'.format(directory))
 
-common_print_function_restrict(files,directory)
+if restrict_functions_json:
+    common_print_function_restrict(files, directory)
+else:    
+    common_print_scripts_restrict(scripts_files,files)

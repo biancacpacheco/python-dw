@@ -39,7 +39,8 @@ then
     python2 -m demo.demo_interact "$FUNCTIONS" "$DIRECTORY" "$SCRIPTS"
 
 else 
-    python2 -m demo.demo_interact ."$SCRIPTS" "$DIRECTORY" "$SCRIPTS"
+    python2 -m demo.demo_interact "$FUNCTIONS" "$DIRECTORY" "$SCRIPTS"
 fi
 
-
+find . -name "*.pyc" -type f -delete
+find . -name "*.py~" -type f -delete

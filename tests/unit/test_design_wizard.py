@@ -13,12 +13,12 @@ class TestDesignWizard(unittest.TestCase):
     
     
     def test_default_values(self):
-        dw = PythonDW()
-        self.assertEqual(dw.ast_tree, [])
-        self.assertEqual(dw.entities, {})
+        design_wizard = PythonDW()
+        self.assertEqual(design_wizard.ast_tree, [])
+        self.assertEqual(design_wizard.entities, {})
         self.assertTrue\
          (set(["class","function","import","call","expression"]).\
-         issubset(set(dw.ast_elements_dict.keys())))
+         issubset(set(design_wizard.ast_elements_dict.keys())))
 
 
     def test_values_after_parse_file_get_all_functions(self):
