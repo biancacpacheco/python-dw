@@ -17,13 +17,13 @@ then
                                     with your own design tests using 
                                     Design Wizard API. 
                                     (not implemented yet) \n 
--f [./path/to/json/functions.json]  Json file containing the 
+-f [path/to/json/functions.json]  Json file containing the 
                                     functions to be restricted 
                                     by the Design Wizard API. \n
 -d [path/to/dir]                    Directory containing the .py
                                     files to be parsed by the 
                                     Design Wizard.\n
-To see more how to configure these files and use the API, 
+To see more how to configure these files and how to use the API, 
 access https://github.com/Caio-Batista/python-dw#python-design-wizard\n" 
     exit 1
 fi
