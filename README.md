@@ -14,9 +14,9 @@ The Python Design Wizard is a tool, and also an api, that uses the AST (Abstract
 
 ### Why should I use it?
 First of all, this tool is way easier to use than the raw AST, that has some very useful options, but need abstraction to be used in different ways. The Python DW uses two forms of abstractions that are Relation and Entity. These two allow the user to search for patterns, check the tree for calls of specific functions and also to restrict the use of them too.  
-Python DW can also be used to search slow algorithms based on their syntax. 
+Python DW can also be used to search slow algorithms based on their syntax. It comes along with an interactive module to execute your own *Design tests*, called [dw-check](google.com).
 
-### How to use it?
+### How to use the API?
 This tool is used like any api else. It creates the abstractions with side functions in the main module that can be found in [here](https://github.com/Caio-Batista/python-dw/blob/master/api/design_wizard.py). All the functions have their own documentations but are self explanned by their names and the section of the code that are found.
 
 Next is an example how to use the tool:
@@ -29,8 +29,11 @@ python_dw.parse("path/to/file.py")
 ```
 After this you can use the functions to create whatever restrictions or rule search that you want.
 
-### Is it tested?
+### What is the dw-check?
 
+### How to use the dw-check?
+
+### Is it tested?
 Python DW has 100% of coverage in function testing, this tests can be found in the [test directory](https://github.com/Caio-Batista/python-dw/tree/master/tests). This tool is also self-tested, what means that the code tests itself with the abstract syntax tree. 
 The test suite can be improved anytime by the user who can add new kinds of tests like *Design Tests*.
 
