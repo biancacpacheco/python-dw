@@ -68,7 +68,7 @@ function1 function2 file4.py
 
 $
 ```
-The each file in the directory will be printed the result. The dot (".") represents that for this file there's none of the functions, and if exists any of these functions in the file, the result will be the functions fould and then the file name.
+For each file in the directory will be printed the result. The dot (".") represents that for this file there's none of the functions, and if exists any of these functions in the file, the result will be the functions fould and then the file name.
 
 
 #### Script testing
