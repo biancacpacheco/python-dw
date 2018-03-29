@@ -57,24 +57,83 @@ In order for the **dw-check** to work properly the json file must be in this for
 The result will be displayed as it follows:
 
 ```shell
-$ ./dw-check -f my/dir/functions.json -d my/dir/python_files/
+$ ./dw-check -f path/dir/functions.json -d path/dir/python_files_dir
 
-Directory: my/dir/python_files
+Directory: path/dir/python_files_dir
 
-. .  file1.py
-function1 . file2.py
-. function2 file3.py
+.  file1.py
+function1 file2.py
+function2 file3.py
 function1 function2 file4.py
 
 $
+```
+The each file in the directory will be printed the result. The dot (".") represents that for this file there's none of the functions, and if exists any of these functions in the file, the result will be the functions fould and then the file name.
 
+
+#### Script testing
+This part of the **dw-check** uses the api to incorporate the users' tests to the Python DW, it is very similar to the function restriction functionality, but this time instead of having a json file with the functions, here it's a json file containing the name of the files (scripts) with test case functions. To use this feature run:
+
+```shell
+$ ./dw-check -s path/dir/scripts.json -d path/dir/python_files_dir
 ```
 
+Here **-s** stands for "scripts" and again **-d** stands for "directory".
+
+
+In order for the **dw-check** to work properly the json file must be in this format, for the N scripts that the user wants to filter: 
+
+```json
+{"scripts":["script1.py", "script2.py"]}
+```
+
+And the scrips must be like this:
+
+- **test.py**
+```python
+def test(self):
+    self.assertEqual(self.dw.get_all_classes_str(), \
+     ['Test','Test2'])
+    self.assertEqual(self.dw.get_all_functions_str(), \
+     ['func1','func2', 'inside_func'])
+    self.assertEqual(self.dw.get_all_imports_str(), \
+     ['Math','unittest'])
+```
+**dw** is the current Design Wizard that already parsed the file to be tested and with all the api functionalities.
+
+To incorporate the test into Python DW the test case must start with the prefix **test** and that's why the json file and the functions are similar to the following:
+
+```json
+{"scripts":["test_case_1.py","test_case_2.py"]}
+```
+
+The result of the command:
+
+```shell
+$ ./dw-check -s path/dir/scripts.json -d path/dir/python_files_dir
+
+Directory: path/dir/python_files_dir
+
+. . file1.py
+test_case_1 . file2.py
+test_case_1 test_case_2 file3.py
+. test_case_2 file4.py
+
+$
+```
+For each one of the files all the scripts are tested, if the file passes the test then the dot (".") will be shown, otherwise the name of the test case will appear. Different from the function restriction, this result will print one dot for each test passed even if the file passes all tests. 
 
 ---
-**NOTE**
+**NOTE 1**
 
-It works with almost all markdown flavours (the below blank line matters).
+In order to **dw-check** work properly the script file name **must be the same** name of the test case inside of it.
+
+---
+
+---
+**NOTE 2**
+
+Also in order to **dw-check** work properly the script file **must be placed** in this [directory](https://github.com/Caio-Batista/python-dw/tree/master/tests/scripts) (tests/scripts). Notice here that the directory already has a file, **DO NOT ERASE test_selected_scripts.py**. This file is essential to the execution of the test suite.
 
 ---
 
