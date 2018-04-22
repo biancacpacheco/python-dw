@@ -17,30 +17,32 @@ then
                                     with your own design tests using 
                                     Design Wizard API. 
                                     (not implemented yet) \n 
--f [path/to/json/functions.json]  Json file containing the 
+-f [path/to/json/functions.json]    Json file containing the 
                                     functions to be restricted 
                                     by the Design Wizard API. \n
--d [path/to/dir]                    Directory containing the .py
-                                    files to be parsed by the 
-                                    Design Wizard.\n
+-d [path/to/dir]                    (Optional) Directory containing 
+                                    the .py files to be parsed by
+                                    the Design Wizard. Default to 
+                                    same directory.\n
 To see more how to configure these files and how to use the API, 
 access https://github.com/Caio-Batista/python-dw#python-design-wizard\n" 
     exit 1
 fi
 
-if [ -z "$DIRECTORY" -o \( -z "$SCRIPTS" -a -z "$FUNCTIONS" \) ];
+if [ -z "$SCRIPTS" -a -z "$FUNCTIONS" ];
 then
     echo -e "Directory is required and at least one of restrict options.\nTo see argument options run './dw-check.sh help'"
     exit 1
 fi
 
-if [ -z "$SCRIPTS" ];
+if [ -z "$DIRECTORY" ];
 then
-    python2 -m demo.demo_interact "$FUNCTIONS" "$DIRECTORY" "$SCRIPTS"
-
-else 
-    python2 -m demo.demo_interact "$FUNCTIONS" "$DIRECTORY" "$SCRIPTS"
+    echo -e "WARNING: Running for current directory $PWD."
+    DIRECTORY="$PWD"
 fi
+
+
+python2 -m demo.demo_interact "$FUNCTIONS" "$DIRECTORY" "$SCRIPTS"
 
 find . -name "*.pyc" -type f -delete
 find . -name "*.py~" -type f -delete

@@ -114,7 +114,7 @@ def common_print_function_restrict(files, directory):
         if not test_result: 
             test_result.append(".")
         
-        file_to_parser = file_to_parser[len(directory) + 1:]    
+        file_to_parser = file_to_parser[len(directory):]    
         
         print("{0} {1}".format(" ".join(test_result),file_to_parser))            
         
@@ -133,7 +133,7 @@ def common_print_scripts_restrict(scripts_files, files):
         dw.parse(file_to_parse)
         
         sufix = len(".py")
-        file_to_parse = file_to_parse[len(directory) + 1:]         
+        file_to_parse = file_to_parse[len(directory):]         
         results[file_to_parse] = []
         for script in scripts_files:
             path_script = "tests.scripts.{0}".format(script[:-sufix])
@@ -170,18 +170,28 @@ restrict_functions_json, restrict_scripts_json, scripts_files = [],[],[]
 
 
 if functions_json_path != "" :
-    functions_json_path = "./{0}".format(functions_json_path)
-    restrict_functions_json = json.load(open(functions_json_path))
+    if not functions_json_path[0] == "/":
+        functions_json_path = "./{0}".format(functions_json_path)
+    try:    
+        restrict_functions_json = json.load(open(functions_json_path))
+    except: 
+        print("No such file: {0}\nExiting script;".format(functions_json_path))
+        sys.exit(1)    
 else:
     scripts_json_path = "{0}".format(scripts_json_path)
-    restrict_scripts_json = json.load(open(scripts_json_path))
+    try:
+        restrict_scripts_json = json.load(open(scripts_json_path))
+    except:
+        print("No such file: {0}\nExiting script;".format(scripts_json_path))
+        sys.exit(1)             
     scripts_files = restrict_scripts_json['scripts']
     
 
 
 print("\nDirectory: " + directory)
 
-directory = "./{0}".format(directory)
+if not directory[0] == "/": 
+    directory = "./{0}".format(directory)
 files = glob.glob('{0}/*.py'.format(directory))
 
 if restrict_functions_json:
