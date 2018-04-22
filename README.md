@@ -149,38 +149,14 @@ $ ./run_tests.sh
 The result of the command is a well detaled test suite run of each module of the tool. 
 
 ## Examples and sample data
-The Python DW comes with an example of what you can do with this api. It's an interactive demo to search for calls of certain functions inside python modules in a certain directory. To use this demo just follow the next quick guide:
+The Python DW comes with an example of what you can do with this api. With this files th user can understand the concept of *Design testing* and also have samples of data and scripts to run along with **dw-check**.
+Listed bellow are the files that can be used as models/guides or tests it self.
 
-First of all open the [file](https://github.com/Caio-Batista/python-dw/blob/master/demo/restrict.json) and configure with functions that you want to detect, like this:
-
-```json
-{"functions_not_allowed":["sort", "min", "max", "map", "sum"]}
-```
-
-Then execute on your shell:
-```shell
-$ python2 -m demo.demo_interact
-```
-
-or for python 3: 
-
-```shell
-$ python3 -m demo.demo_interact
-```
-
-The demo will ask for a python directory:
-
-```shell
-$ python2 -m demo.demo_interact
-
-
-======Type the name of directory to use Python DW=============
-
-
-Directory: [path/to/dir]
-```
-
-Done, the demo will print file by file each and single one of the functions found acording to the json config file.
+- [functions restrict json sample](https://github.com/Caio-Batista/python-dw/blob/master/demo/restrict.json)
+- [scripts to test json sample](https://github.com/Caio-Batista/python-dw/blob/master/demo/scripts.json)
+- [scripts sample](https://github.com/Caio-Batista/python-dw/tree/master/tests/scripts/samples)
+- [python modules sample](https://github.com/Caio-Batista/python-dw/tree/master/data)
+- [python modules divided by single entity](https://github.com/Caio-Batista/python-dw/tree/master/tests/data)
 
 ## Some important definitions
 
