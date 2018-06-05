@@ -1,12 +1,13 @@
 #!/bin/bash
 
-while getopts s:f:d: option
+while getopts s:f:d:r: option
 do
 case "${option}"
 in
 s) SCRIPTS=${OPTARG};;
 f) FUNCTIONS=${OPTARG};;
 d) DIRECTORY=${OPTARG};;
+r) RECURSIVE=${OPTARG};;
 esac
 done
 
@@ -42,7 +43,7 @@ then
 fi
 
 
-python2 -m demo.demo_interact "$FUNCTIONS" "$DIRECTORY" "$SCRIPTS"
+python2 -m demo.demo_interact "$FUNCTIONS" "$DIRECTORY" "$SCRIPTS" "$RECURSIVE"
 
 find . -name "*.pyc" -type f -delete
 find . -name "*.py~" -type f -delete

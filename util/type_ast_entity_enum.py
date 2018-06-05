@@ -20,7 +20,9 @@ class AstEntityTypeEnum:
          "store" : ast.Store, \
          "subscript" : ast.Subscript, \
          "index" : ast.Index, \
-         "tuple" : ast.Tuple
+         "tuple" : ast.Tuple, \
+         "if" : ast.If, \
+         "compare": ast.Compare 
          } 
 
     try:

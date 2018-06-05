@@ -34,14 +34,18 @@ class PythonDW:
         return entity 
         
     def get_entity_by_type(self,type_entity):
-        entities_return = []
+        entities_return_fields = []
+        entities_return_functions = []
         entities = self.entities
         for k,v in entities.items():
-            if isinstance(v,type_entity):
-                entities_return.append(v)
-            elif isinstance(v,FieldNode) and (type(v) == type([])):
-                entities_return += v    
-        return entities_return        
+            if (type(v) == type([])) and isinstance(v[0], FieldNode):
+                entities_return_fields += v  
+            elif isinstance(v,type_entity):
+                entities_return_functions.append(v)      
+        if type_entity == FieldNode:
+            return entities_return_fields 
+        elif type_entity == FunctionNode:
+            return entities_return_functions         
             
     
     def delete_entity_by_name(self, name):
@@ -84,7 +88,8 @@ class PythonDW:
          self.get_all_elements_file('load') + \
          self.get_all_elements_file('store') + \
          self.get_all_elements_file('index') + \
-         self.get_all_elements_file('subscript')
+         self.get_all_elements_file('subscript') + \
+         self.get_all_elements_file('if')
           					
 
     def get_all_classes(self):
@@ -154,7 +159,7 @@ class PythonDW:
         
         # Only creates if is not in entity dict 
         if self.get_entity_by_name(name) == "":
-            self.entities[name] = function_entity
+            self.entities["def_" + name] = function_entity
             calls = function_entity.get_function_calls_str\
              (just_caller=True)
             for call in calls:
@@ -170,12 +175,13 @@ class PythonDW:
                     function_callee.set_name_to_ast_name()
                     callee_name = function_callee.get_name() 
                     function_callee.add_callee(function_entity)
-                    self.entities[callee_name] = function_callee
+                    self.entities["def_" + callee_name] = function_callee
     
-    def create_field_entity(self,node):  
+    def create_field_entity(self,node): 
         parent = node.parent
         grand_parent = {}
         field_node = {}
+
         if not isinstance(parent, ast.Module):
             grand_parent = parent.parent            
             
@@ -187,25 +193,42 @@ class PythonDW:
             else:
                 field_node.set_name('for'+ str(len(self.entities["for"]) + 1))
                 self.entities["for"].append(field_node)  
+
+        if isinstance(node, self.ast_elements_dict['if']):
+            field_node = FieldNode("if", ast_node=node, is_loop=False)
+            if self.entities.get("if") is None:
+                field_node.set_name("if1")                
+                self.entities["if"] = [field_node]
+            else:
+                field_node.set_name('if'+ str(len(self.entities["if"]) + 1))
+                self.entities["if"].append(field_node)  
                   
         if isinstance(node, self.ast_elements_dict['assign']) or \
          isinstance(node, self.ast_elements_dict['augassign']): 
             node = node.value
+            
         if isinstance(node, self.ast_elements_dict['call']):
-            if isinstance(node, self.ast_elements_dict['attribute']):
-                field_node = FieldNode("attr", ast_node=node, is_call=True, is_attribute=True)
-            else:
-                field_node = FieldNode("call", ast_node=node, is_call=True, is_attribute=False)
 
-            field_node.set_name_to_ast_name()
-            if not (isinstance(parent, self.ast_elements_dict['function']) or \
-             isinstance(grand_parent, self.ast_elements_dict['function']) or \
-             isinstance(parent, self.ast_elements_dict['assign']) or \
-             isinstance(parent, self.ast_elements_dict['augassign']) ):
-                if self.entities.get(field_node.get_name()) is None:
-                    self.entities[field_node.get_name()] = [field_node]
+            if isinstance(node.func, self.ast_elements_dict['attribute']):
+                field_node = FieldNode(node.func.attr, ast_node=node, is_call=True, is_attribute=True)
+            elif isinstance(node.func, self.ast_elements_dict['call']):
+                if isinstance(node.func.func, self.ast_elements_dict['call']):
+                    field_node = FieldNode(node.func.func.id, ast_node=node, is_call=True, is_attribute=False)
                 else:
-                    self.entities[field_node.get_name()].append(field_node)
+                    field_node = FieldNode("call", ast_node=node, is_call=True, is_attribute=False)
+                    field_node.set_name_to_ast_name()    
+            else:
+                field_node = FieldNode("call", ast_node=node, is_call=True, is_attribute=False)    
+                field_node.set_name_to_ast_name()
+            #if not (isinstance(parent, self.ast_elements_dict['function']) or \
+             #isinstance(grand_parent, self.ast_elements_dict['function'])):
+             #isinstance(parent, self.ast_elements_dict['assign']) or \
+             #isinstance(parent, self.ast_elements_dict['augassign']) ):
+                #print(self.entities.get(field_node.get_name())) 
+            if self.entities.get(field_node.get_name()) is None:
+                self.entities[field_node.get_name()] = [field_node]
+            else:
+                self.entities[field_node.get_name()].append(field_node)
         else:
             if isinstance(node, self.ast_elements_dict['index']):
                 field_node = FieldNode("index", ast_node=node, is_index=True)
@@ -213,7 +236,9 @@ class PythonDW:
                 field_node = FieldNode("subscript", ast_node=node, is_subscript=True)
             elif isinstance(node, self.ast_elements_dict['tuple']):      
                 field_node = FieldNode("tuple", ast_node=node, is_subscript=True)
-            
+            elif isinstance(node, self.ast_elements_dict['assign']) or \
+              isinstance(node, self.ast_elements_dict['call']):
+                create_field_entity(node.value)  
             
             if field_node != {}:
                 if self.entities.get("assign_field") is None:

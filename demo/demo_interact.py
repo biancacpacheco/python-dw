@@ -74,20 +74,26 @@ def common_print_function_restrict(files, directory):
         
 
         dw = PythonDW()
-        dw.parse(file_to_parser)
+        try:
+            dw.parse(file_to_parser)
+        except:
+            print("Parse_error {0}".format(file_to_parser))
+            continue
+                
 
         for e in dw.get_all_functions():
             dw.create_function_entity(e)
+            for field in e.body:
+                dw.create_field_entity(field)
+            
 
         for e in dw.get_all_fields_without_class_func():
             dw.create_field_entity(e)
                  
-
-            
         functions_to_filter = restrict_functions_json["functions_not_allowed"]
 
-        func_entities_dw = dw.get_entity_by_type(FunctionNode)
-        field_entities_dw = dw.entities.keys()
+        func_entities_dw = dw.get_entity_by_type(FunctionNode)  
+        field_entities_dw = dw.get_entity_by_type(FieldNode)
 
 
         functions_with_violations = {}
@@ -99,9 +105,11 @@ def common_print_function_restrict(files, directory):
                     functions_with_violations[e.get_name()].append(call)
 
         for e in field_entities_dw:
-            if e in functions_to_filter:
-                for field in dw.entities[e]:
-                    functions_with_violations[field.get_parent_name()] = e
+            if e.get_name() in functions_to_filter:
+                if dw.entities.get(e.get_name()) is not None:
+                    for field in dw.entities.get(e.get_name()):
+                        functions_with_violations[field.get_parent_name()] = e.get_name()
+            
               
         test_result = []
         for k,v in functions_with_violations.items():
@@ -158,13 +166,16 @@ def common_print_scripts_restrict(scripts_files, files):
     print("\n")
         
 
-if len(sys.argv) != 4:
+
+
+
+if len(sys.argv) != 5:
     print("======Run the script with 'python -m demo.demo_interact" +\
      " path/to/json dir/to/parse'=============")
     print("Exiting script")
     exit(1)
     
-functions_json_path, directory, scripts_json_path = sys.argv[1], sys.argv[2], sys.argv[3]    
+functions_json_path, directory, scripts_json_path, recursive = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]    
 
 restrict_functions_json, restrict_scripts_json, scripts_files = [],[],[]
 
@@ -189,12 +200,24 @@ else:
 
 
 print("\nDirectory: " + directory)
-
+      
 if not directory[0] == "/": 
     directory = "./{0}".format(directory)
-files = glob.glob('{0}/*.py'.format(directory))
+        
+if recursive == 't':
 
-if restrict_functions_json:
-    common_print_function_restrict(files, directory)
-else:    
-    common_print_scripts_restrict(scripts_files,files)
+    folders = glob.glob('{0}/*'.format(directory))
+    for direc in folders:
+        print("Sub Directory: " + direc)
+        temp_files = glob.glob('{0}/*.py'.format(direc))
+        common_print_function_restrict(temp_files, direc)
+    
+        
+        
+else:      
+    files = glob.glob('{0}/*.py'.format(directory))
+
+    if restrict_functions_json:
+        common_print_function_restrict(files, directory)
+    else:    
+        common_print_scripts_restrict(scripts_files,files)

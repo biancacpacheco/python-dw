@@ -13,12 +13,18 @@ class Test2:
         a.sort()
         pass
 
+if a in b:
+    print(a)
+
+
 f = [1,2]
 a = f.sort()
 b = []
 b += f.sort()
 c = f.sort()
 d = sum(f)
+
+
 
 def func1(r_param):
     func2()

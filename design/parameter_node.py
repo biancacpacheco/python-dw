@@ -16,7 +16,10 @@ class ParameterNode(entity.Entity):
         try:
             node_name = self.ast_node.arg
         except:
-            node_name = self.ast_node.id
+            try:
+                node_name = self.ast_node.id
+            except:
+                node_name = "tuple_or_list"    
             
         return node_name	
 
@@ -24,7 +27,10 @@ class ParameterNode(entity.Entity):
         try:
             self.name = self.ast_node.arg
         except:
-            self.name = self.ast_node.id
+            try:
+                self.name = self.ast_node.id
+            except:
+                self.name = "tuple_or_list"  
             
     def add_relation(self,relation):
         relation_type = relation.get_type_relation()
