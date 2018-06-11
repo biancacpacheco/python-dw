@@ -158,13 +158,13 @@ class PythonDW:
         name = function_entity.get_name() 
         
         # Only creates if is not in entity dict 
-        if self.get_entity_by_name(name) == "":
+        if self.get_entity_by_name("def_" + name) == "":
             self.entities["def_" + name] = function_entity
             calls = function_entity.get_function_calls_str\
              (just_caller=True)
             for call in calls:
-                if self.get_entity_by_name(call) != "":
-                    self.get_entity_by_name(call).add_callee\
+                if self.get_entity_by_name("def_" + call) != "":
+                    self.get_entity_by_name("def_" + call).add_callee\
                      (function_entity)
                 elif self.get_function_by_name(call) != []:
                     node_function_callee = \
@@ -211,6 +211,12 @@ class PythonDW:
 
             if isinstance(node.func, self.ast_elements_dict['attribute']):
                 field_node = FieldNode(node.func.attr, ast_node=node, is_call=True, is_attribute=True)
+                if isinstance(node.func.value, self.ast_elements_dict['call']):
+                    field_node_value = FieldNode("Temporary_name", ast_node=node.func.value, is_call=True, is_attribute=False)
+                    field_node_value.set_name_to_ast_name()
+                    relation = Relation(field_node, RelationTypeEnum.ISCALLED, field_node_value)
+                    field_node.add_relation(relation)
+                
             elif isinstance(node.func, self.ast_elements_dict['call']):
                 if isinstance(node.func.func, self.ast_elements_dict['call']):
                     field_node = FieldNode(node.func.func.id, ast_node=node, is_call=True, is_attribute=False)

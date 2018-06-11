@@ -7,6 +7,7 @@ class Test:
 class Test2:
     
     def inside_func():
+        a = raw_input().split()
         print("Something not important printed here")
         map(sum,[1,2])
         a = [1,4,2]

@@ -43,19 +43,19 @@ class TestDesignWizard(unittest.TestCase):
     def test_body_not_empty_function(self):
         self.dw.create_function_entity_by_name("inside_func")
         self.assertNotEqual(self.dw.entities, [])
-        func_entity1 = self.dw.get_entity_by_name("inside_func")	
+        func_entity1 = self.dw.get_entity_by_name("def_inside_func")	
         self.assertNotEqual\
          (func_entity1.get_function_fields_body(), [])
 
 
     def test_get_parameters_from_function(self):
         self.dw.create_function_entity_by_name("func2")
-        function = self.dw.get_entity_by_name("func2")
+        function = self.dw.get_entity_by_name("def_func2")
         parameters = function.get_parameters_function_str()
         self.assertEqual(parameters, [])  
         
         self.dw.create_function_entity_by_name("func1")
-        function = self.dw.get_entity_by_name("func1")
+        function = self.dw.get_entity_by_name("def_func1")
         parameters = function.get_parameters_function_str()
         self.assertEqual(parameters, ['r_param'])        			
 
@@ -86,7 +86,7 @@ class TestDesignWizard(unittest.TestCase):
         
         self.dw.create_function_entity_by_name("func1")
         self.assertNotEqual(self.dw.entities, [])
-        func_entity = self.dw.get_entity_by_name("func1")
+        func_entity = self.dw.get_entity_by_name("def_func1")
         self.assertEqual(func_entity.get_name(), 'func1')
         
         self.assertNotEqual(func_entity.relations, {})
@@ -105,12 +105,12 @@ class TestDesignWizard(unittest.TestCase):
         # node's creation.
         self.dw.create_function_entity_by_name("func2")
         self.assertNotEqual(self.dw.entities, [])
-        func_entity2 = self.dw.get_entity_by_name("func2")
+        func_entity2 = self.dw.get_entity_by_name("def_func2")
         self.assertEqual(func_entity2.get_name(), 'func2')
         
         self.dw.create_function_entity_by_name("func1")
         self.assertNotEqual(self.dw.entities, [])
-        func_entity1 = self.dw.get_entity_by_name("func1")
+        func_entity1 = self.dw.get_entity_by_name("def_func1")
         self.assertEqual(func_entity1.get_name(), 'func1')
         
         self.assertEqual\
@@ -121,7 +121,7 @@ class TestDesignWizard(unittest.TestCase):
     def test_get_calls_inside_functions_body(self):
         self.dw.create_function_entity_by_name("func1")
         self.assertNotEqual(self.dw.entities, [])
-        func_entity = self.dw.get_entity_by_name("func1")
+        func_entity = self.dw.get_entity_by_name("def_func1")
         self.assertEqual(func_entity.get_name(),'func1')
         
         self.assertEqual(func_entity.get_function_calls_str(), \
@@ -140,15 +140,15 @@ class TestDesignWizard(unittest.TestCase):
         
         self.assertNotEqual(self.dw.entities, {})
         
-        self.assertTrue("func1" in self.dw.entities)
-        self.assertTrue("func2" in self.dw.entities)
+        self.assertTrue("def_func1" in self.dw.entities)
+        self.assertTrue("def_func2" in self.dw.entities)
         self.assertTrue("Test" in self.dw.entities)
         self.assertTrue("Test2" in self.dw.entities)
         
         self.dw.delete_entity_by_name("Test")
         
-        self.assertTrue("func1" in self.dw.entities)
-        self.assertTrue("func2" in self.dw.entities)
+        self.assertTrue("def_func1" in self.dw.entities)
+        self.assertTrue("def_func2" in self.dw.entities)
         self.assertTrue("Test2" in self.dw.entities)
 
         self.assertTrue("Test" not in self.dw.entities)
@@ -162,8 +162,8 @@ class TestDesignWizard(unittest.TestCase):
         
         self.assertNotEqual(self.dw.entities, {})
         
-        self.assertTrue("func1" in self.dw.entities)
-        self.assertTrue("func2" in self.dw.entities)
+        self.assertTrue("def_func1" in self.dw.entities)
+        self.assertTrue("def_func2" in self.dw.entities)
         self.assertTrue("Test" in self.dw.entities)
         self.assertTrue("Test2" in self.dw.entities)
         
@@ -175,12 +175,12 @@ class TestDesignWizard(unittest.TestCase):
         self.dw.create_function_entity_by_name("func1")
         self.dw.create_function_entity_by_name("func2")
         self.dw.create_function_entity_by_name("inside_func")
-        func2 = self.dw.get_entity_by_name("func2")
+        func2 = self.dw.get_entity_by_name("def_func2")
         
         self.assertEquals\
          (func2.get_function_calls_str(just_callee=True),['func1'])
          
-        i =  self.dw.get_entity_by_name("inside_func")
+        i =  self.dw.get_entity_by_name("def_inside_func")
         self.assertEquals\
          (i.get_function_calls_str(just_caller=True),['print','map','sort'])
            
@@ -189,7 +189,9 @@ class TestDesignWizard(unittest.TestCase):
         fields_str = []
         for e in fields:
             self.dw.create_field_entity(e)
-        self.assertEquals(list(self.dw.entities.keys()), ['sort', 'for','sum', 'range', 'assign_field', 'if'])
+        self.assertEquals(list(self.dw.entities.keys()), ['sort',\
+          'func2', 'for', 'map', 'sum', 'range', 'split',\
+          'assign_field', 'raw_input', 'if'])
    
     def test_nested_for_sorting_algorithm(self):
         LAST_ADDED_FOR = -1
@@ -223,7 +225,24 @@ class TestDesignWizard(unittest.TestCase):
         
         self.assertTrue(test)        
                     
-              
+    def test_split_with_raw_input(self):
+        fields = self.dw.get_all_fields_without_class_func()
+        for e in fields:
+            self.dw.create_field_entity(e)
+        
+        
+        test = True
+        for e in self.dw.entities.get("split"):
+            relations = e.relations.get("ISCALLED") if \
+             e.relations.get("ISCALLED") is not None else [] 
+            
+            test = False if not relations else True
+            
+            for split_relation in relations:
+                if split_relation.get_callee_str() != "raw_input":
+                    test = False
+        
+        self.assertTrue(test)                     
 
     def tearDown(self):
         self.dw = []

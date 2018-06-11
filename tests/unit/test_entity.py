@@ -31,7 +31,7 @@ class TestFunctionEntityModule(unittest.TestCase):
         
     def test_dafault_values_for_empty_function(self):
         self.dw.create_function_entity_by_name("empty_func")
-        empty_func = self.dw.get_entity_by_name("empty_func")
+        empty_func = self.dw.get_entity_by_name("def_empty_func")
         
         self.assertEqual(empty_func.get_name(), "empty_func")     
         self.assertEqual\

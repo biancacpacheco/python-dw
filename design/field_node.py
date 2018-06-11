@@ -81,5 +81,13 @@ class FieldNode(Entity):
             
         return loops
             
+    def add_relation(self,relation):
+        relation_type = relation.get_type_relation()
+        value_dict = self.relations.get(relation_type)
+        if value_dict is None:
+            self.relations[relation_type] = [relation]
+        else:
+            if relation not in self.relations[relation_type]:
+                self.relations[relation_type].append(relation)
             
                                 

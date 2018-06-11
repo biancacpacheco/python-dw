@@ -6,6 +6,8 @@ from util.type_ast_entity_enum import Print
 from design.parameter_node import ParameterNode
 from design.field_node import FieldNode
 from design.relation.relation import Relation
+import ast
+from ast import *
 
 class FunctionNode(entity.Entity):
     
@@ -120,6 +122,7 @@ class FunctionNode(entity.Entity):
     
     def initialize_parameters(self):
         self.parameters = self.ast_node.args.args
+                
         relation = ""
         for parameter in self.parameters:
             parameter_entity = ParameterNode\
@@ -155,7 +158,10 @@ class FunctionNode(entity.Entity):
         for call in calls:
             is_attribute = False
             call_name = ""
-            if isinstance(call.func, ast_enum.ast_entity_dict["attribute"]):
+            if isinstance(call, ast_enum.ast_entity_dict["print"]):
+                call_name = "print"
+                is_attribute = False
+            elif isinstance(call.func, ast_enum.ast_entity_dict["attribute"]):
                 call_name = call.func.attr
                 is_attribute = True
             else:
