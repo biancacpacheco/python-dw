@@ -138,8 +138,12 @@ def common_print_scripts_restrict(scripts_files, files):
   
 
         dw = PythonDW()
-        dw.parse(file_to_parse)
-        
+        try:
+            dw.parse(file_to_parse)
+        except:
+            print("Parse_error {0}".format(file_to_parse))
+            continue
+            
         sufix = len(".py")
         file_to_parse = file_to_parse[len(directory):]         
         results[file_to_parse] = []
@@ -205,14 +209,20 @@ if not directory[0] == "/":
     directory = "./{0}".format(directory)
         
 if recursive == 't':
-
-    folders = glob.glob('{0}/*'.format(directory))
-    for direc in folders:
-        print("Sub Directory: " + direc)
-        temp_files = glob.glob('{0}/*.py'.format(direc))
-        common_print_function_restrict(temp_files, direc)
-    
-        
+    if restrict_functions_json:
+        folders = glob.glob('{0}/*'.format(directory))
+        for direc in folders:
+            print("Sub Directory: " + direc)
+            temp_files = glob.glob('{0}/*.py'.format(direc))
+            common_print_function_restrict(temp_files, direc)
+    else:
+        folders = glob.glob('{0}/*'.format(directory))
+        for direc in folders:
+            print("Sub Directory: " + direc)
+            temp_files = glob.glob('{0}/*.py'.format(direc))
+            common_print_scripts_restrict(scripts_files, temp_files)
+            
+            
         
 else:      
     files = glob.glob('{0}/*.py'.format(directory))
