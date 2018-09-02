@@ -226,11 +226,7 @@ class PythonDW:
             else:
                 field_node = FieldNode("call", ast_node=node, is_call=True, is_attribute=False)    
                 field_node.set_name_to_ast_name()
-            #if not (isinstance(parent, self.ast_elements_dict['function']) or \
-             #isinstance(grand_parent, self.ast_elements_dict['function'])):
-             #isinstance(parent, self.ast_elements_dict['assign']) or \
-             #isinstance(parent, self.ast_elements_dict['augassign']) ):
-                #print(self.entities.get(field_node.get_name())) 
+
             if self.entities.get(field_node.get_name()) is None:
                 self.entities[field_node.get_name()] = [field_node]
             else:

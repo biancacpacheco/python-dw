@@ -18,7 +18,7 @@ class FieldNode(Entity):
         
         if is_loop:
             self.body = self.ast_node.body
-
+            
     def get_name(self):
         return self.name        
 
@@ -37,7 +37,7 @@ class FieldNode(Entity):
             try:
                 self.name = self.ast_node.func.func.id
             except:
-                print("FERROU MUITO")
+                return
                 
         elif isinstance(self.ast_node.func, ast_enum.ast_entity_dict['compare']):
             try:
@@ -58,7 +58,7 @@ class FieldNode(Entity):
                 self.name = str(self.ast_node.target)
             except:
                 self.name = str(self.ast_node.test)
-                          
+    
             
     def get_parent_name(self):
         if self.is_call and not \
