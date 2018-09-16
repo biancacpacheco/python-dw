@@ -162,20 +162,26 @@ class PythonDW:
             self.entities["def_" + name] = function_entity
             calls = function_entity.get_function_calls_str\
              (just_caller=True)
-            for call in calls:
-                if self.get_entity_by_name("def_" + call) != "":
-                    self.get_entity_by_name("def_" + call).add_callee\
-                     (function_entity)
-                elif self.get_function_by_name(call) != []:
-                    node_function_callee = \
-                     self.get_function_by_name(call) 
-                    classe = function_entity.__class__ 
-                    function_callee = classe\
-                     ("temporary_name2", ast_node=node_function_callee)
-                    function_callee.set_name_to_ast_name()
-                    callee_name = function_callee.get_name() 
-                    function_callee.add_callee(function_entity)
-                    self.entities["def_" + callee_name] = function_callee
+            self.create_calls_entities(calls, function_entity) 
+
+    
+    def create_calls_entities(self, calls, function_entity):
+        for call in calls:
+            if self.get_entity_by_name("def_" + call) != "":
+                self.get_entity_by_name("def_" + call).add_callee\
+                 (function_entity)
+            elif self.get_function_by_name(call) != []:
+                print("CAI AQUIIIIIIIIIIIIIIIIIIIII")
+                node_function_callee = \
+                 self.get_function_by_name(call) 
+                classe = function_entity.__class__ 
+                function_callee = classe\
+                 ("temporary_name2", ast_node=node_function_callee)
+                function_callee.set_name_to_ast_name()
+                callee_name = function_callee.get_name() 
+                function_callee.add_callee(function_entity)
+                self.entities["def_" + callee_name] = function_callee
+        
     
     def create_field_entity(self,node): 
         parent = node.parent
