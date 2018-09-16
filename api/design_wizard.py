@@ -171,7 +171,6 @@ class PythonDW:
                 self.get_entity_by_name("def_" + call).add_callee\
                  (function_entity)
             elif self.get_function_by_name(call) != []:
-                print("CAI AQUIIIIIIIIIIIIIIIIIIIII")
                 node_function_callee = \
                  self.get_function_by_name(call) 
                 classe = function_entity.__class__ 
@@ -181,6 +180,9 @@ class PythonDW:
                 callee_name = function_callee.get_name() 
                 function_callee.add_callee(function_entity)
                 self.entities["def_" + callee_name] = function_callee
+            elif self.get_function_by_name(call) == []:
+                # create field call and relation
+                pass    
         
     
     def create_field_entity(self,node): 
