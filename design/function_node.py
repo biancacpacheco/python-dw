@@ -107,7 +107,9 @@ class FunctionNode(entity.Entity):
         if value_dict is None:
             self.relations[relation_type] = [relation]
         else:
-            if relation not in self.relations[relation_type]:
+            relations_str = [e.get_str_relation() for e in \
+             self.relations[relation_type]]
+            if relation.get_str_relation() not in relations_str:
                 self.relations[relation_type].append(relation)
 
 

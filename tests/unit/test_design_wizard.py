@@ -3,7 +3,7 @@ from util.type_entity_enum import EntityTypeEnum
 from util.type_relation_enum import RelationTypeEnum
 from api.design_wizard import PythonDW
 from design.function_node import FunctionNode
-
+from design.relation.relation import Relation
 
 class TestDesignWizard(unittest.TestCase):
     
@@ -113,9 +113,15 @@ class TestDesignWizard(unittest.TestCase):
         func_entity1 = self.dw.get_entity_by_name("def_func1")
         self.assertEqual(func_entity1.get_name(), 'func1')
         
+
+        relation_calls = [e.get_str_relation() \
+         for e in func_entity2.relations.get('ISCALLED')]
+        
         self.assertEqual\
          (func_entity2.get_function_calls_str\
          (just_callee=True), ['func1'])
+        self.assertEqual\
+         (relation_calls, ['func2 ISCALLED func1'])
     
     
     def test_get_calls_inside_functions_body(self):

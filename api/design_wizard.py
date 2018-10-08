@@ -167,9 +167,17 @@ class PythonDW:
     
     def create_calls_entities(self, calls, function_entity):
         for call in calls:
-            if self.get_entity_by_name("def_" + call) != "":
-                self.get_entity_by_name("def_" + call).add_callee\
-                 (function_entity)
+            call_entity = self.get_entity_by_name("def_" + call)
+            if call_entity != "":
+                call_entity.add_callee(function_entity)
+                self.get_entity_by_name("def_" + call) 
+                relation_calls = Relation(function_entity,\
+                 RelationTypeEnum.CALLS, call_entity)
+                function_entity.add_relation(relation_calls) 
+                relation_iscalled = Relation(call_entity,\
+                 RelationTypeEnum.ISCALLED, function_entity)
+                call_entity.add_relation(relation_iscalled)
+                
             elif self.get_function_by_name(call) != []:
                 node_function_callee = \
                  self.get_function_by_name(call) 
