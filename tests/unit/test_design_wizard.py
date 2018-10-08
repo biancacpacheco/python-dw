@@ -118,9 +118,6 @@ class TestDesignWizard(unittest.TestCase):
          for e in func_entity2.relations.get('ISCALLED')]
         
         self.assertEqual\
-         (func_entity2.get_function_calls_str\
-         (just_callee=True), ['func1'])
-        self.assertEqual\
          (relation_calls, ['func2 ISCALLED func1'])
     
     
