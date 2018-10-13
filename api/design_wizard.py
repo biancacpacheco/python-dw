@@ -171,9 +171,11 @@ class PythonDW:
             if call_entity != "":
                 call_entity.add_callee(function_entity)
                 self.get_entity_by_name("def_" + call) 
+                
                 relation_calls = Relation(function_entity,\
                  RelationTypeEnum.CALLS, call_entity)
                 function_entity.add_relation(relation_calls) 
+                
                 relation_iscalled = Relation(call_entity,\
                  RelationTypeEnum.ISCALLED, function_entity)
                 call_entity.add_relation(relation_iscalled)
