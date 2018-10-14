@@ -145,6 +145,7 @@ class PythonDW:
     """ CREATION ENTITY FUNCTIONS """
     
     #TODO(Caio) Needs update
+    #TODO(Caio) Create relation with function
     def create_class_entity(self, node):
         class_entity = ClassNode("temporary_name", ast_node=node)
         class_entity.set_name_to_ast_name()
