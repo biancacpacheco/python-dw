@@ -13,7 +13,6 @@ from design.parameter_node import ParameterNode
 class PythonDW:
     """Python Design Wizard API"""
     
-    
     def __init__(self):
         self.ast_tree = []
         self.entities = {}
