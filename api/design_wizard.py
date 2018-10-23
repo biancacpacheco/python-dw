@@ -88,7 +88,8 @@ class PythonDW:
          self.get_all_elements_file('store') + \
          self.get_all_elements_file('index') + \
          self.get_all_elements_file('subscript') + \
-         self.get_all_elements_file('if')
+         self.get_all_elements_file('if') + \
+         self.get_all_elements_file('expression') 
           					
 
     def get_all_classes(self):
@@ -113,8 +114,44 @@ class PythonDW:
         for clas in classes:
             if clas.name == name:
                 class_found = clas
-        return class_found        
-    
+        return class_found    
+        
+    ##############################################################
+    # Create this helpful function
+        
+    def get_field_calls_by_name(self, name):
+        call_nodes = []
+        fields = self.get_all_fields_without_class_func()
+        for field in fields:
+            if isinstance(field, self.ast_elements_dict['expression']):
+                field = field.value
+            
+            if isinstance(field, self.ast_elements_dict['call']):
+                call_name = self.get_call_field_name(field)
+                if call_name == name:
+                    call_nodes.append(field)
+                    
+            elif isinstance(field, self.ast_elements_dict['print'])\
+             and name == 'print':
+                 call_nodes.append(field)
+                
+                
+                
+            
+        
+        
+        return call_nodes
+        
+    def get_call_field_name(self, node):
+        if isinstance(node.func, self.ast_elements_dict['attribute']): 
+            return node.func.attr
+        else:
+            return node.func.id                           
+     
+     # WORKING HERE TOP
+     #############################################################
+     
+     
     def get_function_by_name(self,name):
         function_found = []
         functions = self.get_all_functions()
@@ -144,7 +181,6 @@ class PythonDW:
     """ CREATION ENTITY FUNCTIONS """
     
     #TODO(Caio) Needs update
-    #TODO(Caio) Create relation with function
     def create_class_entity(self, node):
         class_entity = ClassNode("temporary_name", ast_node=node)
         class_entity.set_name_to_ast_name()
@@ -190,8 +226,11 @@ class PythonDW:
                 callee_name = function_callee.get_name() 
                 function_callee.add_callee(function_entity)
                 self.entities["def_" + callee_name] = function_callee
+                
             elif self.get_function_by_name(call) == []:
                 # create field call and relation
+                #self.create_field_entity(call)
+                #print(call)
                 pass    
         
     
@@ -234,13 +273,6 @@ class PythonDW:
                     field_node_value.set_name_to_ast_name()
                     relation = Relation(field_node, RelationTypeEnum.ISCALLED, field_node_value)
                     field_node.add_relation(relation)
-                
-            elif isinstance(node.func, self.ast_elements_dict['call']):
-                if isinstance(node.func.func, self.ast_elements_dict['call']):
-                    field_node = FieldNode(node.func.func.id, ast_node=node, is_call=True, is_attribute=False)
-                else:
-                    field_node = FieldNode("call", ast_node=node, is_call=True, is_attribute=False)
-                    field_node.set_name_to_ast_name()    
             else:
                 field_node = FieldNode("call", ast_node=node, is_call=True, is_attribute=False)    
                 field_node.set_name_to_ast_name()

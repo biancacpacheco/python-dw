@@ -245,7 +245,11 @@ class TestDesignWizard(unittest.TestCase):
                 if split_relation.get_callee_str() != "raw_input":
                     test = False
         
-        self.assertTrue(test)                     
+        self.assertTrue(test) 
+        
+    def test_get_calls_fields_by_name(self):
+        num_field_calls = self.dw.get_field_calls_by_name("print")
+        self.assertTrue(num_field_calls > 0)
 
     def tearDown(self):
         self.dw = []

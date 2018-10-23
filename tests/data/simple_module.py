@@ -26,7 +26,6 @@ c = f.sort()
 d = sum(f)
 
 
-
 def func1(r_param):
     func2()
     pass
