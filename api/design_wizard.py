@@ -89,7 +89,8 @@ class PythonDW:
          self.get_all_elements_file('index') + \
          self.get_all_elements_file('subscript') + \
          self.get_all_elements_file('if') + \
-         self.get_all_elements_file('expression') 
+         self.get_all_elements_file('expression') + \
+         self.get_all_elements_file('print')
           					
 
     def get_all_classes(self):
@@ -122,27 +123,23 @@ class PythonDW:
     def get_field_calls_by_name(self, name):
         call_nodes = []
         fields = self.get_all_fields_without_class_func()
-        for field in fields:
-            if isinstance(field, self.ast_elements_dict['expression']):
-                field = field.value
+
+        for field in fields:           
             
             if isinstance(field, self.ast_elements_dict['call']):
-                call_name = self.get_call_field_name(field)
+                call_name = self.get_name_call_node(field)
                 if call_name == name:
                     call_nodes.append(field)
                     
             elif isinstance(field, self.ast_elements_dict['print'])\
              and name == 'print':
                  call_nodes.append(field)
-                
-                
-                
-            
-        
-        
+                 
+     
         return call_nodes
+
         
-    def get_call_field_name(self, node):
+    def get_name_call_node(self, node):
         if isinstance(node.func, self.ast_elements_dict['attribute']): 
             return node.func.attr
         else:

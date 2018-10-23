@@ -248,8 +248,14 @@ class TestDesignWizard(unittest.TestCase):
         self.assertTrue(test) 
         
     def test_get_calls_fields_by_name(self):
-        num_field_calls = self.dw.get_field_calls_by_name("print")
-        self.assertTrue(num_field_calls > 0)
+        num_field_calls = len(self.dw.get_field_calls_by_name("sort"))
+        self.assertEqual(num_field_calls, 4)
+        
+        num_field_calls = len(self.dw.get_field_calls_by_name("map"))
+        self.assertEqual(num_field_calls, 1)
+        
+        num_field_calls = len(self.dw.get_field_calls_by_name("print"))
+        self.assertEqual(num_field_calls, 3)                
 
     def tearDown(self):
         self.dw = []
