@@ -18,15 +18,11 @@ class LoopNode(entity.Entity):
         it.__init__(*args, **kwds)
         return it
 
-    def __init__(self, name, ast_node, parameters=[], fields=[], \
-     returns=[], function_calls={}, initialize_elements=True):
+    def __init__(self, name, ast_node, limited_loop=True):
         entity.Entity.__init__(self,name=name,ast_node=ast_node)
-        self.type_entity = EntityTypeEnum.FUNCTION
-        self.parameters = parameters 
-        self.fields = fields
-        self.returns = returns
-        self.function_calls = function_calls
-        
+        self.type_entity = EntityTypeEnum.LOOP
+        self.limited_loop = limited_loop
+
         if initialize_elements:
             self.initialize_elements()
 
