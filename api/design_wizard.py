@@ -120,7 +120,7 @@ class PythonDW:
     ##############################################################
     # Create this helpful function
         
-    def get_field_calls_by_name(self, name):
+    def get_node_calls_by_name(self, name):
         call_nodes = []
         fields = self.get_all_fields_without_class_func()
 
@@ -225,13 +225,13 @@ class PythonDW:
                 self.entities["def_" + callee_name] = function_callee
                 
             elif self.get_function_by_name(call) == []:
-                # create field call and relation
-                #self.create_field_entity(call)
-                #print(call)
-                pass    
+                call_nodes = self.get_node_calls_by_name(call)
+                for node in call_nodes:
+                    self.create_field_entity(node, call)
+   
         
     
-    def create_field_entity(self,node): 
+    def create_field_entity(self, node, name=""): 
         parent = node.parent
         grand_parent = {}
         field_node = {}
