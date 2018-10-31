@@ -27,6 +27,5 @@ class LoopNode(entity.Entity):
     """ ACCSSES AND CONTROL OF THE NODE ATTRIBUTES"""
     
     def get_name(self):
-        if self.ast_node == {}:
-            return self.name
-        return self.ast_node.name 	
+        if "for" not in self.name and "while" not in self.name:
+            return "for" if limited_loop else "while"	
