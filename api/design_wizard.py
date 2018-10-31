@@ -5,6 +5,7 @@ from util.type_relation_enum import RelationTypeEnum
 from util.type_ast_entity_enum import AstEntityTypeEnum
 from design.relation.relation import Relation
 from design.class_node import ClassNode
+from design.loop_node import LoopNode
 from design.function_node import FunctionNode 
 from design.field_node import FieldNode
 from design.parameter_node import ParameterNode
@@ -202,43 +203,50 @@ class PythonDW:
         for call in calls:
             call_entity = self.get_entity_by_name("def_" + call)
             if call_entity != "":
-                call_entity.add_callee(function_entity)
-                self.get_entity_by_name("def_" + call) 
-                
-                relation_calls = Relation(function_entity,\
-                 RelationTypeEnum.CALLS, call_entity)
-                function_entity.add_relation(relation_calls) 
-                
-                relation_iscalled = Relation(call_entity,\
-                 RelationTypeEnum.ISCALLED, function_entity)
-                call_entity.add_relation(relation_iscalled)
+                self.__create_call_already_exists(call, call_entity, \
+                 function_entity)
                 
             elif self.get_function_by_name(call) != []:
-                node_function_callee = \
-                 self.get_function_by_name(call) 
-                classe = function_entity.__class__ 
-                
-                function_callee = classe\
-                 ("temporary_name2", ast_node=node_function_callee)
+                self.__create_call_not_exists(call, function_entity)
 
-                relation_calls = Relation(function_entity,\
-                 RelationTypeEnum.CALLS, function_callee) 
-                function_entity.add_relation(relation_calls)
-                 
-                relation_iscalled = Relation(function_callee,\
-                 RelationTypeEnum.ISCALLED, function_entity)
-                function_callee.add_relation(relation_iscalled)
-                                  
-                function_callee.set_name_to_ast_name()
-                callee_name = function_callee.get_name() 
-                function_callee.add_callee(function_entity)
-                self.entities["def_" + callee_name] = function_callee
-                
             elif self.get_function_by_name(call) == []:
                 call_nodes = self.get_node_calls_by_name(call)
                 for node in call_nodes:
                     self.create_field_entity(node, call)
-   
+                    
+    def __create_call_already_exists(self, call, \
+     call_entity, function_entity):
+        call_entity.add_callee(function_entity)
+        self.get_entity_by_name("def_" + call) 
+        
+        relation_calls = Relation(function_entity,\
+         RelationTypeEnum.CALLS, call_entity)
+        function_entity.add_relation(relation_calls) 
+        
+        relation_iscalled = Relation(call_entity,\
+         RelationTypeEnum.ISCALLED, function_entity)
+        call_entity.add_relation(relation_iscalled)   
+        
+    def __create_call_not_exists(self, call, function_entity):
+        node_function_callee = \
+         self.get_function_by_name(call) 
+        classe = function_entity.__class__ 
+        
+        function_callee = classe\
+         ("temporary_name2", ast_node=node_function_callee)
+
+        relation_calls = Relation(function_entity,\
+         RelationTypeEnum.CALLS, function_callee) 
+        function_entity.add_relation(relation_calls)
+         
+        relation_iscalled = Relation(function_callee,\
+         RelationTypeEnum.ISCALLED, function_entity)
+        function_callee.add_relation(relation_iscalled)
+                          
+        function_callee.set_name_to_ast_name()
+        callee_name = function_callee.get_name() 
+        function_callee.add_callee(function_entity)
+        self.entities["def_" + callee_name] = function_callee
         
     
     def create_field_entity(self, node, name=""): 
@@ -250,13 +258,7 @@ class PythonDW:
             grand_parent = parent.parent            
             
         if isinstance(node, self.ast_elements_dict['for']):
-            field_node = FieldNode("for", ast_node=node, is_loop=True)
-            if self.entities.get("for") is None:
-                field_node.set_name("for1")                
-                self.entities["for"] = [field_node]
-            else:
-                field_node.set_name('for'+ str(len(self.entities["for"]) + 1))
-                self.entities["for"].append(field_node)  
+            self.create_loop_entity(node)
 
         if isinstance(node, self.ast_elements_dict['if']):
             field_node = FieldNode("if", ast_node=node, is_loop=False)
@@ -306,7 +308,15 @@ class PythonDW:
                     self.entities["assign_field"].append(field_node)                  
                               
 
-            
+    def create_loop_entity(self, node):
+        loop_entity = LoopNode("for", ast_node=node, limited_loop=True)
+        field_entity = FieldNode("for", ast_node=node, is_loop=True)
+        if self.entities.get("for") is None:
+            field_entity.set_name("for1")                
+            self.entities["for"] = [field_entity]
+        else:
+            field_entity.set_name('for'+ str(len(self.entities["for"]) + 1))
+            self.entities["for"].append(field_entity)         
 
 
     """ Returning strings functions """

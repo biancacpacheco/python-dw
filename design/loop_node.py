@@ -23,9 +23,6 @@ class LoopNode(entity.Entity):
         self.type_entity = EntityTypeEnum.LOOP
         self.limited_loop = limited_loop
 
-        if initialize_elements:
-            self.initialize_elements()
-
 
     """ ACCSSES AND CONTROL OF THE NODE ATTRIBUTES"""
     
