@@ -43,7 +43,18 @@ class TestParameterEntityModule(unittest.TestCase):
     pass    
 
 class TestClassEntityModule(unittest.TestCase):
-    pass 
+    
+    def setUp(self):
+        self.dw = PythonDW()
+        self.dw.parse("tests/data/function_module.py")
+        
+    def test_add_relation(self):
+        functions = self.dw.get_all_functions()
+        for func in functions:
+            self.dw.create_function_entity(func)
+        
+        function_entity = self.dw.entities.get("def_caller_func")
+        self.assertNotEqual(function_entity.add_relation, {})
 
 if __name__ == '__main__':
     print("\n== Testing General Entity ==")
@@ -54,4 +65,9 @@ if __name__ == '__main__':
     print("\n== Testing Function entity ==")
 
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFunctionEntityModule)
-    unittest.TextTestRunner(verbosity=2).run(suite)             
+    unittest.TextTestRunner(verbosity=2).run(suite)
+    
+    print("\n== Testing Entity methods ==")
+    
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestClassEntityModule)
+    unittest.TextTestRunner(verbosity=2).run(suite)              

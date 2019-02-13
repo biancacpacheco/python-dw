@@ -8,3 +8,5 @@ class RelationTypeEnum:
     ISFIELDOF = "ISFIELDOF"
     CALLS = "CALLS"
     ISCALLED = "ISCALLED"
+    HASLOOP = "HASLOOP"
+    ISLOOPOF = "ISLOOPOF"

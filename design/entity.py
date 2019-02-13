@@ -32,3 +32,13 @@ class Entity(object):
     def contains_relation(self, relation):
         raise NotImplementedError("Not implemented yet.")					
 
+    def add_relation(self,relation):
+        relation_type = relation.get_type_relation()
+        value_dict = self.relations.get(relation_type)
+        if value_dict is None:
+            self.relations[relation_type] = [relation]
+        else:
+            relations_str = [e.get_str_relation() for e in \
+             self.relations[relation_type]]
+            if relation.get_str_relation() not in relations_str:
+                self.relations[relation_type].append(relation)

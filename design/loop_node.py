@@ -29,3 +29,8 @@ class LoopNode(entity.Entity):
     def get_name(self):
         if "for" not in self.name and "while" not in self.name:
             return "for" if limited_loop else "while"	
+
+    def get_body(self):
+        return self.ast_node.body
+        
+    

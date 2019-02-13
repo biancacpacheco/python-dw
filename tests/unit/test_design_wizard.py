@@ -255,7 +255,13 @@ class TestDesignWizard(unittest.TestCase):
         self.assertEqual(num_field_calls, 1)
         
         num_field_calls = len(self.dw.get_node_calls_by_name("print"))
-        self.assertEqual(num_field_calls, 3)                
+        self.assertEqual(num_field_calls, 3)
+
+    def test_nested_for(self):
+        fields = self.dw.get_all_fields_without_class_func()
+        for e in fields:
+            self.dw.create_field_entity(e)
+        print self.dw.entities['for']
 
     def tearDown(self):
         self.dw = []
