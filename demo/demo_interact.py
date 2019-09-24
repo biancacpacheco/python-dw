@@ -168,10 +168,6 @@ def common_print_scripts_restrict(scripts_files, files):
         print("{0} {1}".format(" ".join(v),k))
                     
     print("\n")
-        
-
-
-
 
 if len(sys.argv) != 5:
     print("======Run the script with 'python -m demo.demo_interact" +\
@@ -179,12 +175,12 @@ if len(sys.argv) != 5:
     print("Exiting script")
     exit(1)
     
-functions_json_path, directory, scripts_json_path, recursive = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]    
+functions_json_path, directory, scripts_json_path, recursive = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 
 restrict_functions_json, restrict_scripts_json, scripts_files = [],[],[]
 
 
-if functions_json_path != "" :
+if functions_json_path != "" or False :
     if not functions_json_path[0] == "/":
         functions_json_path = "./{0}".format(functions_json_path)
     try:    
@@ -205,7 +201,7 @@ else:
 
 print("\nDirectory: " + directory)
       
-if not directory[0] == "/": 
+if not directory[0] == "/":
     directory = "./{0}".format(directory)
         
 if recursive == 't':
@@ -221,10 +217,9 @@ if recursive == 't':
             print("Sub Directory: " + direc)
             temp_files = glob.glob('{0}/*.py'.format(direc))
             common_print_scripts_restrict(scripts_files, temp_files)
-            
-            
-        
-else:      
+
+
+else:
     files = glob.glob('{0}/*.py'.format(directory))
 
     if restrict_functions_json:

@@ -148,6 +148,32 @@ $ ./run_tests.sh
 ```
 The result of the command is a well detaled test suite run of each module of the tool. 
 
+---
+
+### Running Demo interact
+Use the following commands in order to use the demo script, the three commands are listed here with optional parameters, running as restricted functions or scrips.
+
+The parameter `t` here is the recursive directory flag.
+Use `""` to pass a parameter as null.
+
+Just restricted functions:
+
+```shell
+python -m demo.demo_interact demo/restricted.json {{path/to/folder}} "" t
+```
+
+Just scripts (Design tests):
+
+```shell
+python -m demo.demo_interact "" {{path/to/folder}} demo/restricted.json t
+```
+
+Both restrictions:
+
+```shell
+python -m demo.demo_interact demo/restricted.json {{path/to/folder}} demo/scripts.json t
+```
+
 ## Examples and sample data
 The Python DW comes with an example of what you can do with this api. With this files th user can understand the concept of *Design testing* and also have samples of data and scripts to run along with **dw-check**.
 Listed bellow are the files that can be used as models/guides or tests it self.

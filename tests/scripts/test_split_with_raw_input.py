@@ -16,5 +16,5 @@ def test_split_with_raw_input(self):
         for split_relation in relations:
             if split_relation.get_callee_str() != "raw_input":
                 test = False
-    
-    self.assertTrue(test)                     
+
+    self.assertTrue(test)
