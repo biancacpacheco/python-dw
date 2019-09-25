@@ -114,7 +114,7 @@ class PythonDW:
                 class_found = clas
         return class_found
 
-        ##############################################################
+    ##############################################################
 
     # Create this helpful function
 
@@ -305,10 +305,22 @@ class PythonDW:
         field_entity = FieldNode("for", ast_node=node, is_loop=True)
         if self.entities.get("for") is None:
             field_entity.set_name("for1")
-            self.entities["for"] = [field_entity]
+            self.entities["for"] = [loop_entity]
         else:
             field_entity.set_name('for' + str(len(self.entities["for"]) + 1))
-            self.entities["for"].append(field_entity)
+            self.entities["for"].append(loop_entity)
+
+    def create_body_loop(self, loop):
+        for node in loop.get_body():
+            if isinstance(node, self.ast_elements_dict['for']):
+                self.create_loop_entity(node)
+                last_added_loop = self.entities["for"][-1]
+                # CHANGE THIS RETURNING A LIST 
+                loop_entity = self.get_entity_by_name(loop.get_name())
+                relation = Relation(loop_entity, RelationTypeEnum.HASLOOP, last_added_loop)
+                # loop_entity.add_relation(relation)
+                # print(loop_entity.get_relations())
+
 
     """ Returning strings functions """
 

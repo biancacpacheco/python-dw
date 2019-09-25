@@ -28,9 +28,17 @@ class LoopNode(entity.Entity):
     
     def get_name(self):
         if "for" not in self.name and "while" not in self.name:
-            return "for" if limited_loop else "while"	
+            return "for" if limited_loop else "while"
+        else:
+            return self.name
 
     def get_body(self):
         return self.ast_node.body
         
-    
+    def get_nested_loops(self):
+        loops = []
+        for e in self.get_body():
+            if isinstance(e, ast_enum.ast_entity_dict['for']) or \
+                isinstance(e, ast_enum.ast_entity_dict['while']):
+                    loops.append(e)
+        return loops

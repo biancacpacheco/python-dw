@@ -261,7 +261,9 @@ class TestDesignWizard(unittest.TestCase):
         fields = self.dw.get_all_fields_without_class_func()
         for e in fields:
             self.dw.create_field_entity(e)
-        print self.dw.entities['for']
+        for loop in self.dw.entities['for']:
+            self.dw.create_body_loop(loop)
+        # print(self.dw.get_entity_by_name('for'))
 
     def tearDown(self):
         self.dw = []

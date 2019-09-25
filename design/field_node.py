@@ -69,7 +69,7 @@ class FieldNode(Entity):
               except:
                   return self.name  
         else:
-            return self.name            
+            return self.name
                     
     def get_nested_loops(self):
         loops = []
@@ -78,7 +78,7 @@ class FieldNode(Entity):
                 if isinstance(e, ast_enum.ast_entity_dict['for']) or \
                  isinstance(e, ast_enum.ast_entity_dict['while']):
                      loops.append(e)
-            
+
         return loops
             
     def add_relation(self,relation):
