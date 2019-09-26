@@ -165,7 +165,7 @@ python -m demo.demo_interact demo/restricted.json {{path/to/folder}} "" t
 Just scripts (Design tests):
 
 ```shell
-python -m demo.demo_interact "" {{path/to/folder}} demo/restricted.json t
+python -m demo.demo_interact "" {{path/to/folder}} demo/scripts.json t
 ```
 
 Both restrictions:
