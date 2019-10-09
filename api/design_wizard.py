@@ -26,8 +26,15 @@ class PythonDW:
         for node in ast.walk(self.ast_tree):
             for child in ast.iter_child_nodes(node):
                 child.parent = node
+    
+    # WIP[This should iter over array while and for]
+    def get_loop_entity_by_name(self, name):
+        # print('AAAAAAAAAAAAA %s' % name)
+        return ''
 
     def get_entity_by_name(self, name):
+        if 'for' in name or 'while' in name:
+            return self.get_loop_entity_by_name(name)
         entity = self.entities.get(name)
         if entity is None:
             entity = ""
@@ -302,12 +309,12 @@ class PythonDW:
 
     def create_loop_entity(self, node):
         loop_entity = LoopNode("for", ast_node=node, limited_loop=True)
-        field_entity = FieldNode("for", ast_node=node, is_loop=True)
+        # field_entity = FieldNode("for", ast_node=node, is_loop=True)
         if self.entities.get("for") is None:
-            field_entity.set_name("for1")
+            loop_entity.set_name("for1")
             self.entities["for"] = [loop_entity]
         else:
-            field_entity.set_name('for' + str(len(self.entities["for"]) + 1))
+            loop_entity.set_name('for' + str(len(self.entities["for"]) + 1))
             self.entities["for"].append(loop_entity)
 
     def create_body_loop(self, loop):
@@ -316,10 +323,10 @@ class PythonDW:
                 self.create_loop_entity(node)
                 last_added_loop = self.entities["for"][-1]
                 # CHANGE THIS RETURNING A LIST 
-                loop_entity = self.get_entity_by_name(loop.get_name())
-                relation = Relation(loop_entity, RelationTypeEnum.HASLOOP, last_added_loop)
+                loop_entity_list = self.get_entity_by_name(loop.get_name())
+                # relation = Relation(loop_entity, RelationTypeEnum.HASLOOP, last_added_loop)
                 # loop_entity.add_relation(relation)
-                # print(loop_entity.get_relations())
+                # print('AAAAA', loop_entity_list, loop.get_name())
 
 
     """ Returning strings functions """
