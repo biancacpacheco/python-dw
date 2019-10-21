@@ -26,15 +26,22 @@ class PythonDW:
         for node in ast.walk(self.ast_tree):
             for child in ast.iter_child_nodes(node):
                 child.parent = node
+
+    def parse_loop_name(self, name):
+        return ''.join([i for i in name if not i.isdigit()])
     
     # WIP[This should iter over array while and for]
-    def get_loop_entity_by_name(self, name):
-        # print('AAAAAAAAAAAAA %s' % name)
+    def get_loop_entity_by_name(self, name, type_of_loop='for'):
+        if type_of_loop in name:
+            for e in self.entities.get(type_of_loop):
+                if e.get_name() == name:
+                    return e
         return ''
 
     def get_entity_by_name(self, name):
         if 'for' in name or 'while' in name:
-            return self.get_loop_entity_by_name(name)
+            type_of_loop = self.parse_loop_name(name)
+            return self.get_loop_entity_by_name(name, type_of_loop)
         entity = self.entities.get(name)
         if entity is None:
             entity = ""
@@ -322,12 +329,12 @@ class PythonDW:
             if isinstance(node, self.ast_elements_dict['for']):
                 self.create_loop_entity(node)
                 last_added_loop = self.entities["for"][-1]
-                # CHANGE THIS RETURNING A LIST 
-                loop_entity_list = self.get_entity_by_name(loop.get_name())
-                # relation = Relation(loop_entity, RelationTypeEnum.HASLOOP, last_added_loop)
-                # loop_entity.add_relation(relation)
-                # print('AAAAA', loop_entity_list, loop.get_name())
-
+                loop_entity = self.get_entity_by_name(loop.get_name())
+                relation = Relation(loop_entity, RelationTypeEnum.HASLOOP, last_added_loop)
+                loop_entity.add_relation(relation)
+                print('AAAAA', loop_entity, loop.get_name(), loop_entity.get_relations())
+            else:
+                self.create_field_entity(node)
 
     """ Returning strings functions """
 

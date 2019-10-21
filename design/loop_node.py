@@ -24,7 +24,7 @@ class LoopNode(entity.Entity):
         self.limited_loop = limited_loop
 
 
-    """ ACCSSES AND CONTROL OF THE NODE ATTRIBUTES"""
+    """ ACCESS AND CONTROL OF THE NODE ATTRIBUTES"""
     
     def get_name(self):
         if "for" not in self.name and "while" not in self.name:
@@ -45,3 +45,11 @@ class LoopNode(entity.Entity):
                 isinstance(e, ast_enum.ast_entity_dict['while']):
                     loops.append(e)
         return loops
+
+    """ ACCESS RELATIONS """
+
+    def get_relations(self):
+        return self.relations
+
+    def get_relations_by_type(self, type_relation):
+        return self.relations[type_relation]
