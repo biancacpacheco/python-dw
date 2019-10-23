@@ -263,8 +263,8 @@ class TestDesignWizard(unittest.TestCase):
             self.dw.create_field_entity(e)
         for loop in self.dw.entities['for']:
             self.dw.create_body_loop(loop)
-        print(self.dw.get_entity_by_name('for1').get_relations_by_type('HASLOOP')[0].get_callee().get_name())
-        print(self.dw.entities.get('for'))
+        # print(self.dw.get_entity_by_name('for1').get_relations_by_type('HASLOOP')[0].get_callee().get_name())
+        # print(self.dw.entities.get('for'))
 
     def tearDown(self):
         self.dw = []

@@ -11,9 +11,6 @@ class Entity(object):
     def get_name(self):
         raise NotImplementedError("Not implemented yet.")
 	
-    def get_ast_node(self):
-        raise NotImplementedError("Not implemented yet.")
-    
     def get_relations(self):
         raise NotImplementedError("Not implemented yet.")
         
@@ -32,6 +29,9 @@ class Entity(object):
     def contains_relation(self, relation):
         raise NotImplementedError("Not implemented yet.")					
 
+    def get_ast_node(self):
+        return self.ast_node
+    
     def add_relation(self,relation):
         relation_type = relation.get_type_relation()
         value_dict = self.relations.get(relation_type)

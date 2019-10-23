@@ -77,6 +77,15 @@ class PythonDW:
                 break
         return response
 
+    def check_loop_exists(self, node, type_loop):
+        loops = self.entities.get(type_loop)
+        if loops is None:
+            return False
+
+        for loop in loops:
+           if node == loop.get_ast_node():
+               return True
+
     """ Returning nodes functions """
 
     def get_all_elements_file(self, key):
@@ -264,7 +273,7 @@ class PythonDW:
             grand_parent = parent.parent
 
         if isinstance(node, self.ast_elements_dict['for']):
-            self.create_loop_entity(node)
+            self.create_finite_loop_entity(node)
 
         if isinstance(node, self.ast_elements_dict['if']):
             field_node = FieldNode("if", ast_node=node, is_loop=False)
@@ -314,9 +323,13 @@ class PythonDW:
                 else:
                     self.entities["assign_field"].append(field_node)
 
-    def create_loop_entity(self, node):
+    def create_finite_loop_entity(self, node):
+        is_loop_already_in_entities = self.check_loop_exists(node, 'for')
+
+        if is_loop_already_in_entities:
+            return
+
         loop_entity = LoopNode("for", ast_node=node, limited_loop=True)
-        # field_entity = FieldNode("for", ast_node=node, is_loop=True)
         if self.entities.get("for") is None:
             loop_entity.set_name("for1")
             self.entities["for"] = [loop_entity]
@@ -327,12 +340,11 @@ class PythonDW:
     def create_body_loop(self, loop):
         for node in loop.get_body():
             if isinstance(node, self.ast_elements_dict['for']):
-                self.create_loop_entity(node)
+                self.create_finite_loop_entity(node)
                 last_added_loop = self.entities["for"][-1]
                 loop_entity = self.get_entity_by_name(loop.get_name())
                 relation = Relation(loop_entity, RelationTypeEnum.HASLOOP, last_added_loop)
                 loop_entity.add_relation(relation)
-                print('AAAAA', loop_entity, loop.get_name(), loop_entity.get_relations())
             else:
                 self.create_field_entity(node)
 

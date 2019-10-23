@@ -32,6 +32,9 @@ class LoopNode(entity.Entity):
         else:
             return self.name
 
+    def get_ast_node(self):
+        return self.ast_node
+
     def set_name(self, name):
         self.name = name
 
