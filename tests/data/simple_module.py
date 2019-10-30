@@ -38,6 +38,9 @@ for e in range(10):
         print(i)
         b[0] = a[1]
 
-
+while True:
+    while False:
+        print(k)
+        b[0] = a[1]
 
 

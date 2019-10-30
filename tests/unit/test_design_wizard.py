@@ -10,8 +10,8 @@ class TestDesignWizard(unittest.TestCase):
     def setUp(self):
         self.dw = PythonDW()
         self.dw.parse("tests/data/simple_module.py")
-    
-    
+
+
     def test_default_values(self):
         design_wizard = PythonDW()
         self.assertEqual(design_wizard.ast_tree, [])
@@ -193,12 +193,12 @@ class TestDesignWizard(unittest.TestCase):
         for e in fields:
             self.dw.create_field_entity(e)
         self.assertEquals(list(self.dw.entities.keys()), ['sort',\
-          'func2', 'for', 'map', 'sum', 'range', 'split',\
+          'func2', 'for', 'map', 'sum', 'while','range', 'split',\
           'assign_field', 'raw_input', 'if'])
    
     def test_nested_for_sorting_algorithm(self):
         LAST_ADDED_FOR = -1
-        LAST_ADDED_ASSIGN = -2
+        LAST_ADDED_ASSIGN = -4
         
         fields = self.dw.get_all_fields_without_class_func()
         nested_fields = []
@@ -255,7 +255,7 @@ class TestDesignWizard(unittest.TestCase):
         self.assertEqual(num_field_calls, 1)
         
         num_field_calls = len(self.dw.get_node_calls_by_name("print"))
-        self.assertEqual(num_field_calls, 3)
+        self.assertEqual(num_field_calls, 4)
 
     def test_nested_for(self):
         fields = self.dw.get_all_fields_without_class_func()
@@ -265,6 +265,21 @@ class TestDesignWizard(unittest.TestCase):
             self.dw.create_body_loop(loop)
         self.assertTrue(self.dw.get_entity_by_name('for1').get_relations_by_type('HASLOOP') != [])
         node_callee = self.dw.get_entity_by_name('for1').get_relations_by_type('HASLOOP')[0].get_callee()
+        assertation = False
+        for field in self.dw.entities.get('assign_field'):
+            if self.dw.is_leaf_from_branch(node_callee,field):
+                assertation = True
+        
+        self.assertTrue(assertation)
+
+    def test_nested_while(self):
+        fields = self.dw.get_all_fields_without_class_func()
+        for e in fields:
+            self.dw.create_field_entity(e)
+        for loop in self.dw.entities['while']:
+            self.dw.create_body_loop(loop)
+        self.assertTrue(self.dw.get_entity_by_name('while1').get_relations_by_type('HASLOOP') != [])
+        node_callee = self.dw.get_entity_by_name('while1').get_relations_by_type('HASLOOP')[0].get_callee()
         assertation = False
         for field in self.dw.entities.get('assign_field'):
             if self.dw.is_leaf_from_branch(node_callee,field):

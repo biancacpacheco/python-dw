@@ -18,11 +18,8 @@ class Entity(object):
         raise NotImplementedError("Not implemented yet.")
     
     def set_name_to_ast_name(self):
-        raise NotImplementedError("Not implemented yet.")    	
-	
-    def add_relation(self, relation):
         raise NotImplementedError("Not implemented yet.")
-	
+
     def remove_relation(self, relation):
         raise NotImplementedError("Not implemented yet.")
 	
