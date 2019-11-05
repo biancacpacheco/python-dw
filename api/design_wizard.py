@@ -401,3 +401,10 @@ class PythonDW:
         functions = \
             [e.name for e in self.get_functions_inside_class(name)]
         return functions
+
+    """ Major actions manipulating entities """
+
+    def design_populate_entities(self):
+        fields = self.get_all_fields_without_class_func()
+        for e in fields:
+            self.create_field_entity(e)

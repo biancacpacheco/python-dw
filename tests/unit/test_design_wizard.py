@@ -273,9 +273,10 @@ class TestDesignWizard(unittest.TestCase):
         self.assertTrue(assertation)
 
     def test_nested_while(self):
-        fields = self.dw.get_all_fields_without_class_func()
-        for e in fields:
-            self.dw.create_field_entity(e)
+        # fields = self.dw.get_all_fields_without_class_func()
+        # for e in fields:
+        #     self.dw.create_field_entity(e)
+        self.dw.design_populate_entities()
         for loop in self.dw.entities['while']:
             self.dw.create_body_loop(loop)
         self.assertTrue(self.dw.get_entity_by_name('while1').get_relations_by_type('HASLOOP') != [])
