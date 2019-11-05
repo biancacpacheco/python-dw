@@ -404,7 +404,15 @@ class PythonDW:
 
     """ Major actions manipulating entities """
 
-    def design_populate_entities(self):
+    def design_populate_all_entities(self):
         fields = self.get_all_fields_without_class_func()
         for e in fields:
             self.create_field_entity(e)
+
+    def design_populate_loop_entities(self, loop_name='for'):
+        for loop in self.entities.get(loop_name):
+            self.create_body_loop(loop)
+
+    def design_get_relations_from_entity(self, entity_name, type_relation):
+        entity = self.get_entity_by_name(entity_name)
+        return entity.get_relations_by_type('HASLOOP') if entity != '' else []
