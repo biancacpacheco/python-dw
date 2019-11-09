@@ -30,8 +30,11 @@ class PythonDW:
 
     # WIP[This should iter over array while and for]
     def get_loop_entity_by_name(self, name, type_of_loop='for'):
+        loops = self.entities.get(type_of_loop)
+        if loops is None:
+            return ''
         if type_of_loop in name:
-            for e in self.entities.get(type_of_loop):
+            for e in loops:
                 if e.get_name() == name:
                     return e
         return ''
@@ -404,15 +407,26 @@ class PythonDW:
 
     """ Major actions manipulating entities """
 
+    def design_populate_loop_entities(self, loop_name='for'):
+        loop_entities = self.entities.get(loop_name)
+        if (loop_entities is None):
+            return
+        for loop in self.entities.get(loop_name):
+            self.create_body_loop(loop)
+
     def design_populate_all_entities(self):
         fields = self.get_all_fields_without_class_func()
         for e in fields:
             self.create_field_entity(e)
-
-    def design_populate_loop_entities(self, loop_name='for'):
-        for loop in self.entities.get(loop_name):
-            self.create_body_loop(loop)
+        self.design_populate_loop_entities()
+        self.design_populate_loop_entities(loop_name='while')
 
     def design_get_relations_from_entity(self, entity_name, type_relation):
         entity = self.get_entity_by_name(entity_name)
         return entity.get_relations_by_type('HASLOOP') if entity != '' else []
+
+    def design_has_entity_with_type(self, node, entity_type):
+        for field in self.entities.get(entity_type):
+            if self.is_leaf_from_branch(node, field):
+                return True
+        return False
