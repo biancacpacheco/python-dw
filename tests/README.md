@@ -1,10 +1,13 @@
-# [API] Python Design Wizard docs
+# [TEST] Python Design Wizard docs
 
-## Introduction 
+## Introduction
 
-### What is this API?
+This part of the documentation will help you to create any test in a few steps. Each step must be followed as descripted, otherwise the Python Design Wizard will not function properly.
+To use the [demo](https://github.com/Caio-Batista/python-dw#running-demo-interact) version of the CLI, follow the instructions in the main documentation, then it should be all setup to run the tests created using this section.
 
-🚧 Docs test 🚧
+### 1. Explore the API
+
+First of all, to create any test using this software, one should be familiarized with the [Python Design Wizard API](https://github.com/Caio-Batista/python-dw/tree/master/api#api-python-design-wizard-docs)
 
 ### Basic concepts
 
