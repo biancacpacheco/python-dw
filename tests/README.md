@@ -74,5 +74,37 @@ print('pass')
 
 ### 6. Where should I place my test?
 
-🚧 under construction 🚧
+```
+├── LICENSE
+├── README.md
+├── __init__.py
+├── /api
+├── /data
+├── /demo
+├── /design
+├── dw-check
+├── run_tests.sh
+├── /tests
+│   ├── README.md    < ---- YOU ARE HERE ❌
+│   ├── __init__.py
+│   ├── __init__.pyc
+│   ├── /data
+│   ├── /scripts
+│   │   ├── __init__.py
+│   │   ├── /samples
+│   │   ├── test_xpto.py < ---- PLACE YOUR TEST HERE ✅
+│   │   ├── test_selected_scripts.py
+│   │   ├── test_sorting_algorithm.py
+│   │   ├── test_sorting_old_version.py
+│   │   └── test_split_with_raw_input.py
+│   └── /unit
+```
 
+
+### 7. Configure the test to use in the demo tool 
+
+🚧 Under constrution 🚧
+
+### 8. How can I can run my tests?
+
+Check [this section](https://github.com/Caio-Batista/python-dw#running-demo-interact) of the main documentation for that.
