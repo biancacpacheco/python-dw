@@ -9,9 +9,29 @@ To use the [demo](https://github.com/Caio-Batista/python-dw#running-demo-interac
 
 First of all, to create any test using this software, one should be familiarized with the [Python Design Wizard API](https://github.com/Caio-Batista/python-dw/tree/master/api#api-python-design-wizard-docs)
 
-### Basic concepts
 
-🚧 under construction 🚧
+### 2. Creating the py file
+
+Create an empty file `test_{name of your test}.py`
+
+Example:
+```shell
+$ touch test_xpto.py
+```
+
+### 3. Write a template test
+
+Inside your test file write a simple test passing a self argument and with **the exact name of your file**
+
+`self`: is an modified argument with test assertation and also the `PDW` injected as an attribute. 
+
+When done, the file should be like bellow.
+
+Example: `test_xpto.py`
+```python
+def test_xpto(self):
+    self.assertTrue(True)
+```
 
 ### Methods
 
