@@ -17,7 +17,7 @@ First of all, this tool is way easier to use than the raw AST, that has some ver
 Python DW can also be used to search slow algorithms based on their syntax. It comes along with an interactive module to execute your own *Design tests*, called [dw-check](https://github.com/Caio-Batista/python-dw#what-is-the-dw-check).
 
 ### How to use the API?
-This tool is used like any api else. It creates the abstractions with side functions in the main module that can be found in [here](https://github.com/Caio-Batista/python-dw/blob/master/api/design_wizard.py). All the functions have their own documentations but are self explanned by their names and the section of the code that are found.
+This tool is used like any api else. It creates the abstractions with side functions in the main module that can be found in [this source code](https://github.com/Caio-Batista/python-dw/blob/master/api/design_wizard.py). All the functions have their own [documentations](https://github.com/Caio-Batista/python-dw/tree/master/api#api-python-design-wizard-docs) but they're self explanned by their names and the section of the code that are found.
 
 Next is an example how to use the tool:
 
@@ -122,6 +122,10 @@ test_case_1 test_case_2 file3.py
 $
 ```
 For each one of the files all the scripts are tested, if the file passes the test then the dot (".") will be shown, otherwise the name of the test case will appear. Different from the function restriction, this result will print one dot for each test passed even if the file passes all tests. 
+
+### How can I create a test?
+
+There is a [special section](https://github.com/Caio-Batista/python-dw/tree/master/tests#test-python-design-wizard-docs) dedicated to show step-by-step the design test creation. Check it in order to create your own and learn how to properly configure the demon tool.
 
 ---
 **NOTE 1**
