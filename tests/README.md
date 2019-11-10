@@ -87,7 +87,6 @@ print('pass')
 ├── /tests
 │   ├── README.md    < ---- YOU ARE HERE ❌
 │   ├── __init__.py
-│   ├── __init__.pyc
 │   ├── /data
 │   ├── /scripts
 │   │   ├── __init__.py
@@ -101,9 +100,33 @@ print('pass')
 ```
 
 
-### 7. Configure the test to use in the demo tool 
+### 7. Configure the test to use in the demo tool
 
-🚧 Under constrution 🚧
+```
+├── LICENSE
+├── README.md
+├── __init__.py
+├── api
+├── data
+├── demo
+│   ├── __init__.py
+│   ├── demo_interact.py
+│   ├── restrict.json
+│   └── scripts.json < ---- EDIT THIS FILE 📝
+├── design
+├── dw-check
+├── run_tests.sh
+├── tests
+└── util
+```
+
+The `scripts.json` should be in the following format, so then the demo tool can recognize as a valid test.
+
+Example: `scripts.json`
+
+```json
+{"scripts":["test_case_1.py","test_case_2.py"]}
+```
 
 ### 8. How can I can run my tests?
 
