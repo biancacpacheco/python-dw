@@ -258,7 +258,7 @@ class TestDesignWizard(unittest.TestCase):
         node_callee = \
             self.dw.design_get_relations_from_entity(
              'for1', 'HASLOOP')[0].get_callee()
-        assertation = self.dw.design_has_entity_with_type(
+        assertation = self.dw.design_entity_has_type_as_child(
             node_callee, 'assign_field'
         )
         self.assertTrue(assertation)
@@ -272,10 +272,59 @@ class TestDesignWizard(unittest.TestCase):
         node_callee = \
             self.dw.design_get_relations_from_entity(
                 'while1', 'HASLOOP')[0].get_callee()
-        assertation = self.dw.design_has_entity_with_type(
+        calles = self.dw.design_get_callees_from_entity_relation(
+            'while1', 'HASLOOP')
+        self.assertTrue(
+            self.dw.design_list_entity_has_some_child_as_type(
+                calles, 'assign_field'
+                )
+            )
+        assertation = self.dw.design_entity_has_type_as_child(
             node_callee, 'assign_field'
         )
         self.assertTrue(assertation)
+
+    def test_get_calls_fields_by_name_with_new_api(self):
+        num_field_calls = self.dw.design_get_qtd_calls_function("sort")
+        self.assertEqual(num_field_calls, 4)
+
+        num_field_calls = self.dw.design_get_qtd_calls_function("map")
+        self.assertEqual(num_field_calls, 1)
+
+        num_field_calls = self.dw.design_get_qtd_calls_function("print")
+        self.assertEqual(num_field_calls, 4)
+
+        num_field_calls = self.dw.design_get_qtd_calls_function("func2")
+        self.assertEqual(num_field_calls, 1)
+
+    def test_nested_for_new_api(self):
+        self.dw.design_populate_all_entities()
+        self.assertTrue(
+         self.dw.design_get_relations_from_entity('for1', 'HASLOOP') != []
+        )
+        callees = self.dw.design_get_callees_from_entity_relation(
+            'for1', 'HASLOOP'
+        )
+        self.assertTrue(
+            self.dw.design_list_entity_has_some_child_as_type(
+                callees, 'assign_field'
+            )
+        )
+
+    def test_nested_while_new_api(self):
+        self.dw.design_populate_all_entities()
+        self.assertTrue(
+            self.dw.design_get_relations_from_entity(
+                'while1', 'HASLOOP') != []
+        )
+        callees = self.dw.design_get_callees_from_entity_relation(
+            'while1', 'HASLOOP'
+        )
+        self.assertTrue(
+            self.dw.design_list_entity_has_some_child_as_type(
+                callees, 'assign_field'
+            )
+        )
 
     def tearDown(self):
         self.dw = []

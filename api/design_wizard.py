@@ -170,7 +170,7 @@ class PythonDW:
 
     #############################################################
 
-    # Returns node not entity 
+    # Returns node not entity
     def get_function_by_name(self, name):
         function_found = []
         functions = self.get_all_functions()
@@ -425,8 +425,35 @@ class PythonDW:
         entity = self.get_entity_by_name(entity_name)
         return entity.get_relations_by_type('HASLOOP') if entity != '' else []
 
-    def design_has_entity_with_type(self, node, entity_type):
+    def design_get_callees_from_entity_relation(
+         self, entity_name, type_relation):
+        entities = self.design_get_relations_from_entity(
+            entity_name, type_relation
+        )
+        return [e.get_callee() for e in entities] if len(entities) > 0 else []
+
+    def design_entity_has_type_as_child(self, node, entity_type):
+        entity = self.entities.get(entity_type)
+        if entity is None:
+            return False
         for field in self.entities.get(entity_type):
             if self.is_leaf_from_branch(node, field):
                 return True
         return False
+
+    def design_list_entity_has_every_child_as_type(
+         self, node_list, entity_type):
+        for node in node_list:
+            if not self.design_entity_has_type_as_child(node, entity_type):
+                return False
+        return True
+
+    def design_list_entity_has_some_child_as_type(
+         self, node_list, entity_type):
+        for node in node_list:
+            if self.design_entity_has_type_as_child(node, entity_type):
+                return True
+        return False
+
+    def design_get_qtd_calls_function(self, name):
+        return len(self.get_node_calls_by_name(name))

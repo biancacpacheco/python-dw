@@ -5,7 +5,7 @@ def test_sorting_algorithm(self):
     node_callee = \
         self.dw.design_get_relations_from_entity(
             'for1', 'HASLOOP')[0].get_callee()
-    assertation = self.dw.design_has_entity_with_type(
+    assertation = self.dw.design_entity_has_type_as_child(
         node_callee, 'assign_field'
     )
     self.assertTrue(assertation)
