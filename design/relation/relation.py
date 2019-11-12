@@ -23,8 +23,5 @@ class Relation:
         return self.callee.get_name()    
 
     def get_str_relation(self):
-        return self.caller.get_name() + " " + self.type_relation + " " + self.callee.get_name()
-			
-				
-	
-		
+        return self.caller.get_name() + \
+         " " + self.type_relation + " " + self.callee.get_name()

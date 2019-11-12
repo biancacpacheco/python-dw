@@ -1,5 +1,5 @@
 class RelationTypeEnum:
-    
+
     DEFINES = "DEFINES"
     ISDEFINED = "ISDEFINED"
     CONTAINS = "CONTAINS"
