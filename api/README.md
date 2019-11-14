@@ -103,6 +103,42 @@ python_dw.design_populate_loop_entities()
 }
 ```
 
+#### design_get_entity
+
+
+
+##### Parameters
+
+`name`: Can be `while` or `for` (default) the two types of loop in Python.
+
+##### Return
+
+Array of entities
+
+##### Example
+
+`file.py`
+```python
+print('Hi there!')
+```
+
+`api_example.py`
+```python
+from api.design_wizard import PythonDW
+
+python_dw = PythonDW()
+python_dw.parse("path/to/file.py")
+python_dw.design_populate_loop_entities()
+# dw is populated now
+```
+
+`python_dw.entities`
+```
+{
+    "print": [<Print_entity>]
+}
+```
+
 #### design_get_relations_from_entity
 
 This method gets the array of a single type of relation from an entity.
@@ -190,13 +226,47 @@ python_dw.design_get_callees_from_entity_relation('for1', 'HASLOOP')
 
 #### design_entity_has_type_as_child
 
-Explanation 🚧 under construction 🚧
+This method verifies if the entity has any child node as a specific AST type. All the types of AST nodes can be found [here](https://greentreesnakes.readthedocs.io/en/latest/nodes.html).
 
 ##### Parameters
 
-##### Return 
+`entity`: Desgin entity object
+`type_to_filter`: Any of the AST node types
+
+##### Return
+
+Boolean value
 
 ##### Example
+
+
+`file.py`
+```python
+for e in [1,2,3]:
+    a = e
+```
+
+`api_example.py`
+```python
+from api.design_wizard import PythonDW
+
+python_dw = PythonDW()
+python_dw.parse("path/to/file.py")
+python_dw.design_populate_all_entities()
+# dw is populated now
+entity_for = python_dw.design_get_entity('for')
+# entity_for == [<Loop_entity>]
+python_dw.design_entity_has_type_as_child(entity_for[0], 'assign')
+# Output -> True
+```
+
+`python_dw.entities`
+```
+{
+    "for": [<Loop_entity>],
+    "assign": [<Field_entity>]
+}
+```
 
 
 #### design_list_entity_has_every_child_as_type

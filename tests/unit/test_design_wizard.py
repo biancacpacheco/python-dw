@@ -326,6 +326,15 @@ class TestDesignWizard(unittest.TestCase):
             )
         )
 
+    def test_get_entity(self):
+        self.dw.design_populate_all_entities()
+        self.assertTrue(
+            self.dw.design_get_entity('for') != []
+        )
+        self.assertTrue(
+            isinstance(self.dw.design_get_entity('for'), list)
+        )
+
     def tearDown(self):
         self.dw = []
 

@@ -40,7 +40,8 @@ class PythonDW:
         return ''
 
     def get_entity_by_name(self, name):
-        if 'for' in name or 'while' in name:
+        if 'for' in name and name != 'for' \
+             or 'while' in name and name != 'while':
             type_of_loop = self.parse_loop_name(name)
             return self.get_loop_entity_by_name(name, type_of_loop)
         entity = self.entities.get(name)
@@ -416,8 +417,11 @@ class PythonDW:
 
     def design_populate_all_entities(self):
         fields = self.get_all_fields_without_class_func()
+        functions = self.get_all_functions()
         for e in fields:
             self.create_field_entity(e)
+        for e in functions:
+            self.create_function_entity(e)
         self.design_populate_loop_entities()
         self.design_populate_loop_entities(loop_name='while')
 
@@ -432,28 +436,37 @@ class PythonDW:
         )
         return [e.get_callee() for e in entities] if len(entities) > 0 else []
 
-    def design_entity_has_type_as_child(self, node, entity_type):
-        entity = self.entities.get(entity_type)
-        if entity is None:
+    def design_entity_has_type_as_child(self, entity, type_to_filter):
+        filtered_entities = self.entities.get(type_to_filter)
+        if filtered_entities is None:
             return False
-        for field in self.entities.get(entity_type):
-            if self.is_leaf_from_branch(node, field):
+        for field in filtered_entities:
+            if self.is_leaf_from_branch(entity, field):
                 return True
         return False
 
     def design_list_entity_has_every_child_as_type(
-         self, node_list, entity_type):
-        for node in node_list:
-            if not self.design_entity_has_type_as_child(node, entity_type):
+         self, entity_list, type_to_filter):
+        for entity in entity_list:
+            if not \
+             self.design_entity_has_type_as_child(entity, type_to_filter):
                 return False
         return True
 
     def design_list_entity_has_some_child_as_type(
-         self, node_list, entity_type):
-        for node in node_list:
-            if self.design_entity_has_type_as_child(node, entity_type):
+         self, entity_list, type_to_filter):
+        for entity in entity_list:
+            if self.design_entity_has_type_as_child(entity, type_to_filter):
                 return True
         return False
 
     def design_get_qtd_calls_function(self, name):
         return len(self.get_node_calls_by_name(name))
+
+    def design_get_entity(self, name):
+        entity = self.get_entity_by_name(name)
+        if entity == '':
+            return []
+        if not isinstance(entity, list):
+            return [entity]
+        return entity
