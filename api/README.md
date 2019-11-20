@@ -62,9 +62,11 @@ python_dw.design_populate_all_entities()
 `python_dw.entities`
 ```
 {
-    "print": [<Print_entity>]
+    "print": [<Field_entity>]
 }
 ```
+
+---
 
 #### design_populate_loop_entities
 
@@ -103,13 +105,15 @@ python_dw.design_populate_loop_entities()
 }
 ```
 
+---
+
 #### design_get_entity
 
-
+This method gets the entity parsed by it's name. Always returns an array because *Python Design Wizard* assumes the overload of nodes with same name. E.g.: `for`, `while`, `if`.
 
 ##### Parameters
 
-`name`: Can be `while` or `for` (default) the two types of loop in Python.
+`name`: Name of the entity
 
 ##### Return
 
@@ -130,14 +134,18 @@ python_dw = PythonDW()
 python_dw.parse("path/to/file.py")
 python_dw.design_populate_loop_entities()
 # dw is populated now
+python_dw.design_get_entity('print')
+# Output -> [<Field_entity>]
 ```
 
 `python_dw.entities`
 ```
 {
-    "print": [<Print_entity>]
+    "print": [<Field_entity>]
 }
 ```
+
+---
 
 #### design_get_relations_from_entity
 
@@ -177,10 +185,11 @@ python_dw.design_get_relations_from_entity('for1', 'HASLOOP')
 ```
 {
     "for": [<Loop_entity1>, <Loop_entity2>],
-    "print": [<Print_entity>]
+    "print": [<Field_entity>]
 }
 ```
 
+---
 
 #### design_get_callees_from_entity_relation
 
@@ -220,9 +229,10 @@ python_dw.design_get_callees_from_entity_relation('for1', 'HASLOOP')
 ```
 {
     "for": [<Loop_entity1>, <Loop_entity2>],
-    "print": [<Print_entity>]
+    "print": [<Field_entity>]
 }
 ```
+---
 
 #### design_entity_has_type_as_child
 
@@ -268,57 +278,173 @@ python_dw.design_entity_has_type_as_child(entity_for[0], 'assign')
 }
 ```
 
+---
 
 #### design_list_entity_has_every_child_as_type
 
-Explanation 🚧 under construction 🚧
+Same behavior of the previous method but applied to a list of nodes. Verifying if every element of the list is the type passed as a parameter.
 
 ##### Parameters
 
-##### Return 
+`entity_list`: Desgin entity object array
+`type_to_filter`: Any of the AST node types
+
+##### Return
+
+Boolean value
 
 ##### Example
 
+`file.py`
+```python
+for e in [1,2,3]:
+    a = e
+    print('foo')
+```
+
+`api_example.py`
+```python
+from api.design_wizard import PythonDW
+
+python_dw = PythonDW()
+python_dw.parse("path/to/file.py")
+python_dw.design_populate_all_entities()
+# dw is populated now
+entity_for = python_dw.design_get_entity('for')
+# entity_for == [<Loop_entity>]
+python_dw.design_list_entity_has_every_child_as_type(entity_for, 'assign')
+# Output -> False
+```
+
+`python_dw.entities`
+```
+{
+    "for": [<Loop_entity>],
+    "assign": [<Field_entity>],
+    "print": [<Field_entity>]
+}
+```
+
+---
 
 #### design_list_entity_has_some_child_as_type
 
-Explanation 🚧 under construction 🚧
+Same behavior of the previous method but applied to a list of nodes. Verifying if any element of the list is the type passed as a parameter.
+
 
 ##### Parameters
 
-##### Return 
+`entity_list`: Desgin entity object array
+`type_to_filter`: Any of the AST node types
+
+##### Return
+
+Boolean value
 
 ##### Example
 
+`file.py`
+```python
+for e in [1,2,3]:
+    a = e
+    print('foo')
+```
+
+`api_example.py`
+```python
+from api.design_wizard import PythonDW
+
+python_dw = PythonDW()
+python_dw.parse("path/to/file.py")
+python_dw.design_populate_all_entities()
+# dw is populated now
+entity_for = python_dw.design_get_entity('for')
+# entity_for == [<Loop_entity>]
+python_dw.design_list_entity_has_every_child_as_type(entity_for, 'assign')
+# Output -> True
+```
+
+`python_dw.entities`
+```
+{
+    "for": [<Loop_entity>],
+    "assign": [<Field_entity>],
+    "print": [<Field_entity>]
+}
+```
+
+---
 
 #### design_get_qtd_calls_function
 
-Explanation 🚧 under construction 🚧
+This method gets the quantity of function calls in all the parsed tree.
 
 ##### Parameters
 
-##### Return 
+`name`: Function name
+
+##### Return
+
+Integer
 
 ##### Example
+
+`file.py`
+```python
+for e in [1,2,3]:
+    print(e)
+```
+
+`api_example.py`
+```python
+from api.design_wizard import PythonDW
+
+python_dw = PythonDW()
+python_dw.parse("path/to/file.py")
+python_dw.design_populate_all_entities()
+# dw is populated now
+entity_for = python_dw.design_get_entity('for')
+# entity_for == [<Loop_entity>]
+python_dw.design_get_qtd_calls_function('print')
+# Output -> 1
+```
+
+`python_dw.entities`
+```
+{
+    "for": [<Loop_entity>],
+    "print": [<Field_entity>]
+}
+```
+
+---
 
 ### Types of relations
 
 | Relation | Description | Reverse relation |
 |---|---|---|
-| DEFINES |  | ISDEFINED |
-| ISDEFINED |  | DEFINES |
-| CONTAINS |  | ISCONTAINED |
-| ISCONTAINED |  | CONTAINS |
-| HASFIELD |  | ISFIELDOF |
-| ISFIELDOF |  | HASFIELD |
-| CALLS |  | ISCALLED |
-| ISCALLED |  | CALLS |
-| HASLOOP |  | ISLOOPOF |
-| ISLOOPOF |  | HASLOOP |
+| DEFINES | - | ISDEFINED |
+| ISDEFINED | - | DEFINES |
+| CONTAINS | - | ISCONTAINED |
+| ISCONTAINED | - | CONTAINS |
+| HASFIELD | - | ISFIELDOF |
+| ISFIELDOF | - | HASFIELD |
+| CALLS | - | ISCALLED |
+| ISCALLED | - | CALLS |
+| HASLOOP | - | ISLOOPOF |
+| ISLOOPOF | - | HASLOOP |
 
 
-### Types of nodes
+### Types of node's abstraction (entities)
 
-🚧 under construction 🚧
+| Entity |
+|---|
+| Loop |
+| Function |
+| Field |
+| Class |
+| Import |
+| Parameter |
+
 
 
