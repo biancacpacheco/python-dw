@@ -182,6 +182,7 @@ python -m demo.demo_interact demo/restricted.json {{path/to/folder}} demo/script
 The Python DW comes with an example of what you can do with this api. With this files th user can understand the concept of *Design testing* and also have samples of data and scripts to run along with **dw-check**.
 Listed bellow are the files that can be used as models/guides or tests it self.
 
+- [examples of tests](https://github.com/Caio-Batista/python-dw/tree/master/tests#9-examples)
 - [functions restrict json sample](https://github.com/Caio-Batista/python-dw/blob/master/demo/restrict.json)
 - [scripts to test json sample](https://github.com/Caio-Batista/python-dw/blob/master/demo/scripts.json)
 - [scripts sample](https://github.com/Caio-Batista/python-dw/tree/master/tests/scripts/samples)

@@ -131,3 +131,68 @@ Example: `scripts.json`
 ### 8. How can I can run my tests?
 
 Check [this section](https://github.com/Caio-Batista/python-dw#running-demo-interact) of the main documentation for that.
+
+### 9. Examples
+
+#### Test function calls
+
+`file.py`
+```python
+print('this')
+print('is')
+print('sparta')
+```
+
+`test_function_calls.py`
+```python
+def test_function_calls(self):
+    num_field_calls = self.dw.design_get_qtd_calls_function("print")
+    self.assertEqual(num_field_calls, 3)
+```
+
+---
+
+#### Test entity relations
+
+`file.py`
+```python
+while True:
+    while False:
+        print('this')
+```
+
+`test_entity_relations.py`
+```python
+def test_entity_relations(self):
+    self.dw.design_populate_all_entities()
+    self.assertTrue(
+        self.dw.design_get_relations_from_entity(
+            'while1', 'HASLOOP') != []
+    )
+```
+
+---
+
+#### Test get entity
+
+`file.py`
+```python
+for e in 'abc':
+    print(e)
+
+for e in 'cba':
+    print(e)
+```
+
+`test_get_entity.py`
+```python
+def test_get_entity(self):
+    self.dw.design_populate_all_entities()
+    self.assertTrue(
+        self.dw.design_get_entity('for') != []
+    )
+    self.assertTrue(
+        len(self.dw.design_get_entity('for')) == 2
+    )
+```
+
