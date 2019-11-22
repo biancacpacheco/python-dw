@@ -95,7 +95,7 @@ def function_xpto():
 
 `test_xpto.py`: the test file that will run for your files.
 
-All three files are configured here, just run:
+All three files are configured here, just run from the `root` of this directory:
 
 ```shell
 $ python2 -m demo.demo_interact "" tests/data/example demo/scripts.json f
@@ -114,3 +114,7 @@ At the folder `tests/data/example` create other files to run your `test_xpto.py`
 ### 3. Modify your test
 
 Use the [API](https://github.com/Caio-Batista/python-dw/tree/master/api#api-python-design-wizard-docs) to change your test and also check the [test section](https://github.com/Caio-Batista/python-dw/tree/master/tests#test-python-design-wizard-docs) to improve `test_xpto.py`.
+
+### 4. Cheat test list
+
+There are some [examples](https://github.com/Caio-Batista/python-dw/tree/master/tests#9-examples) that you can start using.
