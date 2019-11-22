@@ -143,7 +143,7 @@ def common_print_scripts_restrict(scripts_files, files):
         except:
             print("Parse_error {0}".format(file_to_parse))
             continue
-            
+
         sufix = len(".py")
         file_to_parse = file_to_parse[len(directory):]         
         results[file_to_parse] = []
@@ -158,15 +158,15 @@ def common_print_scripts_restrict(scripts_files, files):
             for test_name in test_names:
                 suite.addTest(TestModules(test_name, dw, path_script, name_test))
 
-            result = unittest.TextTestRunner(stream=f,descriptions=False).run(suite)
+            result = unittest.TextTestRunner(stream=f, descriptions=False).run(suite)
             if result.wasSuccessful():
                 results[file_to_parse].append(".")
             else:
                 results[file_to_parse].append(script[:-sufix])
-                
-    for k,v in results.items():
-        print("{0} {1}".format(" ".join(v),k))
-                    
+
+    for k, v in results.items():
+        print("{0} {1}".format(" ".join(v), k))
+
     print("\n")
 
 if len(sys.argv) != 5:
@@ -225,4 +225,4 @@ else:
     if restrict_functions_json:
         common_print_function_restrict(files, directory)
     else:    
-        common_print_scripts_restrict(scripts_files,files)
+        common_print_scripts_restrict(scripts_files, files)
