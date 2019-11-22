@@ -46,7 +46,7 @@ This method start all design tests, it parses the AST nodes into a single dict c
 
 `file.py`
 ```python
-print('Hello world!')
+print('Hello world!') # <print1>
 ```
 
 `api_example.py`
@@ -62,7 +62,7 @@ python_dw.design_populate_all_entities()
 `python_dw.entities`
 ```
 {
-    "print": [<Field_entity>]
+    "print": [<print1>]
 }
 ```
 
@@ -101,7 +101,7 @@ python_dw.design_populate_loop_entities()
 `python_dw.entities`
 ```
 {
-    "for": [<Loop_entity>]
+    "for": [<for1>]
 }
 ```
 
@@ -135,13 +135,13 @@ python_dw.parse("path/to/file.py")
 python_dw.design_populate_loop_entities()
 # dw is populated now
 python_dw.design_get_entity('print')
-# Output -> [<Field_entity>]
+# Output -> [<print1>]
 ```
 
 `python_dw.entities`
 ```
 {
-    "print": [<Field_entity>]
+    "print": [<print1>]
 }
 ```
 
@@ -178,14 +178,14 @@ python_dw.parse("path/to/file.py")
 python_dw.design_populate_all_entities()
 # dw is populated now
 python_dw.design_get_relations_from_entity('for1', 'HASLOOP')
-# Output -> [<Relation_loop1_loop2>]
+# Output -> [<Relation_for1_for2>]
 ```
 
 `python_dw.entities`
 ```
 {
-    "for": [<Loop_entity1>, <Loop_entity2>],
-    "print": [<Field_entity>]
+    "for": [<for1>, <for2>],
+    "print": [<print1>]
 }
 ```
 
@@ -208,9 +208,9 @@ Array of entities
 
 `file.py`
 ```python
-for e in [1,2,3]:
-    for letter in 'abc':
-        print(letter)
+for e in [1,2,3]:         # <for1>
+    for letter in 'abc':  # <for2>
+        print(letter)     # <print1>
 ```
 
 `api_example.py`
@@ -222,14 +222,14 @@ python_dw.parse("path/to/file.py")
 python_dw.design_populate_all_entities()
 # dw is populated now
 python_dw.design_get_callees_from_entity_relation('for1', 'HASLOOP')
-# Output -> [<Loop_entity2>]
+# Output -> [<for2>]
 ```
 
 `python_dw.entities`
 ```
 {
-    "for": [<Loop_entity1>, <Loop_entity2>],
-    "print": [<Field_entity>]
+    "for": [<for1>, <for2>],
+    "print": [<print1>]
 }
 ```
 ---
@@ -265,7 +265,7 @@ python_dw.parse("path/to/file.py")
 python_dw.design_populate_all_entities()
 # dw is populated now
 entity_for = python_dw.design_get_entity('for')
-# entity_for == [<Loop_entity>]
+# entity_for == [<for1>]
 python_dw.design_entity_has_type_as_child(entity_for[0], 'assign')
 # Output -> True
 ```
@@ -273,8 +273,8 @@ python_dw.design_entity_has_type_as_child(entity_for[0], 'assign')
 `python_dw.entities`
 ```
 {
-    "for": [<Loop_entity>],
-    "assign": [<Field_entity>]
+    "for": [<for1>],
+    "assign": [<assign1>]
 }
 ```
 
@@ -297,9 +297,9 @@ Boolean value
 
 `file.py`
 ```python
-for e in [1,2,3]:
-    a = e
-    print('foo')
+for e in [1,2,3]:   # <for1>
+    a = e           # <assign1>
+    print('foo')    # <print1>
 ```
 
 `api_example.py`
@@ -311,7 +311,7 @@ python_dw.parse("path/to/file.py")
 python_dw.design_populate_all_entities()
 # dw is populated now
 entity_for = python_dw.design_get_entity('for')
-# entity_for == [<Loop_entity>]
+# entity_for == [<for1>]
 python_dw.design_list_entity_has_every_child_as_type(entity_for, 'assign')
 # Output -> False
 ```
@@ -319,9 +319,9 @@ python_dw.design_list_entity_has_every_child_as_type(entity_for, 'assign')
 `python_dw.entities`
 ```
 {
-    "for": [<Loop_entity>],
-    "assign": [<Field_entity>],
-    "print": [<Field_entity>]
+    "for": [<for1>],
+    "assign": [<assign1>],
+    "print": [<print1>]
 }
 ```
 
@@ -359,7 +359,7 @@ python_dw.parse("path/to/file.py")
 python_dw.design_populate_all_entities()
 # dw is populated now
 entity_for = python_dw.design_get_entity('for')
-# entity_for == [<Loop_entity>]
+# entity_for == [<for1>]
 python_dw.design_list_entity_has_every_child_as_type(entity_for, 'assign')
 # Output -> True
 ```
@@ -367,9 +367,9 @@ python_dw.design_list_entity_has_every_child_as_type(entity_for, 'assign')
 `python_dw.entities`
 ```
 {
-    "for": [<Loop_entity>],
-    "assign": [<Field_entity>],
-    "print": [<Field_entity>]
+    "for": [<for1>],
+    "assign": [<assign1>],
+    "print": [<print1>]
 }
 ```
 
@@ -404,7 +404,7 @@ python_dw.parse("path/to/file.py")
 python_dw.design_populate_all_entities()
 # dw is populated now
 entity_for = python_dw.design_get_entity('for')
-# entity_for == [<Loop_entity>]
+# entity_for == [<for1>]
 python_dw.design_get_qtd_calls_function('print')
 # Output -> 1
 ```
@@ -412,8 +412,8 @@ python_dw.design_get_qtd_calls_function('print')
 `python_dw.entities`
 ```
 {
-    "for": [<Loop_entity>],
-    "print": [<Field_entity>]
+    "for": [<for1>],
+    "print": [<print1>]
 }
 ```
 

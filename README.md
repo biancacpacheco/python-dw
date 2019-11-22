@@ -5,7 +5,11 @@
 ### Python version over version 2.x
 This version of Python Design Wizard uses (mainly) the [AST](https://docs.python.org/2/library/ast.html) api from the Python 2.x lib. It also runs with the [3.x version](https://docs.python.org/3.5/library/ast.html) of the api, but it was not the focus of this project so it may have some issues in some cases e.g.: Print, dict and calls entities.  
 
-## Introduction 
+### No time for all the documentation?
+
+[Getting started here.](https://github.com/Caio-Batista/python-dw/tree/master/demo)
+
+## Introduction
 
 ### What is it?
 The Python Design Wizard is a tool, and also an api, that uses the AST (Abstract syntax tree) of Python to find anti-patterns or *violations* in Python programs without having to run them in anyway. An example of AST in python:
@@ -125,7 +129,7 @@ For each one of the files all the scripts are tested, if the file passes the tes
 
 ### How can I create a test?
 
-There is a [special section](https://github.com/Caio-Batista/python-dw/tree/master/tests#test-python-design-wizard-docs) dedicated to show step-by-step the design test creation. Check it in order to create your own and learn how to properly configure the demon tool.
+There is a [special section](https://github.com/Caio-Batista/python-dw/tree/master/tests#test-python-design-wizard-docs) dedicated to show step-by-step the design test creation. Check it in order to create your own and learn how to properly configure the demo tool.
 
 ---
 **NOTE 1**

@@ -40,7 +40,7 @@ Example 3:
 def function_xpto(): # Caller
     a = 3            # Callee
 
-# function_ xpto HASFIELD assing
+# function_ xpto HASFIELD assign
 ```
 
 ---
@@ -113,4 +113,4 @@ At the folder `tests/data/example` create other files to run your `test_xpto.py`
 
 ### 3. Modify your test
 
-Use the API to change your test and also check the test section to improve `test_xpto.py`.
+Use the [API](https://github.com/Caio-Batista/python-dw/tree/master/api#api-python-design-wizard-docs) to change your test and also check the [test section](https://github.com/Caio-Batista/python-dw/tree/master/tests#test-python-design-wizard-docs) to improve `test_xpto.py`.

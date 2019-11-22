@@ -2,7 +2,7 @@
 
 echo -e "\n\n"
 echo -e "=======================================" 
-echo -e "========TESTING DESING WIZARD==========" 
+echo -e "========TESTING DESIGN WIZARD==========" 
 echo -e "=======================================" 
 
 python2 -m tests.unit.test_design_wizard
