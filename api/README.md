@@ -282,7 +282,7 @@ python_dw.design_entity_has_type_as_child(entity_for[0], 'assign')
 
 #### design_list_entity_has_every_child_as_type
 
-Same behavior of the previous method but applied to a list of nodes. Verifying if every element of the list is the type passed as a parameter.
+This method verifies if the array of entities has any child node as a specific AST type. All the types of AST nodes can be found [here](https://greentreesnakes.readthedocs.io/en/latest/nodes.html). Verifying if every element of the list is the type passed as a parameter.
 
 ##### Parameters
 
@@ -329,7 +329,7 @@ python_dw.design_list_entity_has_every_child_as_type(entity_for, 'assign')
 
 #### design_list_entity_has_some_child_as_type
 
-Same behavior of the previous method but applied to a list of nodes. Verifying if any element of the list is the type passed as a parameter.
+This method verifies if the array of entities has any child node as a specific AST type. All the types of AST nodes can be found [here](https://greentreesnakes.readthedocs.io/en/latest/nodes.html). Verifying if any element of the list is the type passed as a parameter.
 
 
 ##### Parameters
