@@ -92,9 +92,10 @@ class PythonDW:
 
     def get_all_elements_file(self, key):
         list_elements = []
-        for node in ast.walk(self.ast_tree):
-            if isinstance(node, self.ast_elements_dict[key]):
-                list_elements.append(node)
+        if key in self.ast_elements_dict:
+            for node in ast.walk(self.ast_tree):
+                if isinstance(node, self.ast_elements_dict[key]):
+                    list_elements.append(node)
         return list_elements
 
     def get_everything(self):
