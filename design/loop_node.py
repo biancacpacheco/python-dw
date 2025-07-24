@@ -55,4 +55,4 @@ class LoopNode(entity.Entity):
         return self.relations
 
     def get_relations_by_type(self, type_relation):
-        return self.relations[type_relation]
+        return self.relations.get(type_relation, [])

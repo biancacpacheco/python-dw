@@ -48,6 +48,15 @@ class PythonDW:
         if entity is None:
             entity = ""
         return entity
+    
+    def get_entity_by_ast_node(self, target_node):
+        for maybe_list in self.entities.values():
+            if not isinstance(maybe_list, list):
+                maybe_list = [maybe_list]
+            for entity in maybe_list:
+                if entity.ast_node is target_node:
+                    return entity
+        return None
 
     def get_entity_by_type(self, type_entity):
         entities_return_fields = []
@@ -86,6 +95,17 @@ class PythonDW:
 
         for loop in loops:
             if node == loop.get_ast_node():
+                return True
+
+            
+    def check_entity_exists(self, node, type_entity):
+        entity_list = self.entities.get(type_entity)
+
+        if entity_list is None:
+            return False
+
+        for e in entity_list:
+            if node == e.get_ast_node():
                 return True
 
     """ Returning nodes functions """
@@ -345,7 +365,7 @@ class PythonDW:
 
         if is_loop_already_in_entities:
             return
-
+        
         loop_entity = LoopNode("for", ast_node=node, limited_loop=True)
         if self.entities.get("for") is None:
             loop_entity.set_name("for1")
@@ -373,20 +393,30 @@ class PythonDW:
         for node in loop.get_body():
             if isinstance(node, self.ast_elements_dict['for']):
                 self.create_finite_loop_entity(node)
-                last_added_loop = self.entities["for"][-1]
+                nestled_loop = self.get_entity_by_ast_node(node)
                 loop_entity = self.get_entity_by_name(loop.get_name())
                 relation = Relation(loop_entity, RelationTypeEnum.HASLOOP,
-                                    last_added_loop)
+                                    nestled_loop)
                 loop_entity.add_relation(relation)
             elif isinstance(node, self.ast_elements_dict['while']):
                 self.create_infinite_loop_entity(node)
-                last_added_loop = self.entities["while"][-1]
+                nestled_loop = self.get_entity_by_ast_node(node)
                 loop_entity = self.get_entity_by_name(loop.get_name())
                 relation = Relation(loop_entity, RelationTypeEnum.HASLOOP,
-                                    last_added_loop)
+                                    nestled_loop)
                 loop_entity.add_relation(relation)
+            elif isinstance(node, self.ast_elements_dict['if']):
+                continue
             else:
-                self.create_field_entity(node)
+                # self.create_field_entity(node) # i dont think we need this
+                continue
+    """ACCESSING ENTITIES FUNCTIONS"""
+
+    def get_entities_by_type(self, key):
+        if key in self.entities:
+            return self.entities[key]
+        else:
+            return []
 
     """ Returning strings functions """
 
