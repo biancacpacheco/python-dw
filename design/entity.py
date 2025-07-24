@@ -10,13 +10,13 @@ class Entity(object):
         self.relations = {}
 
     def get_name(self):
-        raise NotImplementedError("Not implemented yet.")
+        return self.name
 
     def get_relations(self):
-        raise NotImplementedError("Not implemented yet.")
+        return self.relations
 
     def get_relations_by_type(self, type_relation):
-        raise NotImplementedError("Not implemented yet.")
+        return self.relations[type_relation]
 
     def set_name_to_ast_name(self):
         raise NotImplementedError("Not implemented yet.")
