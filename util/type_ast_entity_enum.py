@@ -16,13 +16,18 @@ class AstEntityTypeEnum:
          "module" : ast.Module, \
          "for" : ast.For, \
          "while" : ast.While, \
-         "load" : ast.Load, \
          "store" : ast.Store, \
          "subscript" : ast.Subscript, \
          "index" : ast.Index, \
          "tuple" : ast.Tuple, \
          "if" : ast.If, \
-         "compare": ast.Compare 
+         "compare": ast.Compare, \
+         "list": ast.List, \
+         "set": ast.Set, \
+         "dict": ast.Dict, \
+         "constant": ast.Constant, \
+         "binop": ast.BinOp, \
+         "subscript": ast.Subscript 
          } 
 
     try:
