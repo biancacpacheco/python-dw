@@ -6,7 +6,7 @@ from design.class_node import ClassNode
 from design.loop_node import LoopNode
 from design.function_node import FunctionNode
 from design.field_node import FieldNode
-
+from design.assign_node import AssignNode
 
 class PythonDW:
     """Python Design Wizard API"""
@@ -295,7 +295,6 @@ class PythonDW:
         # parent = node.parent
         # grand_parent = {}
         field_node = {}
-
         # if not isinstance(parent, ast.Module):
         #     grand_parent = parent.parent
 
@@ -305,7 +304,7 @@ class PythonDW:
         if isinstance(node, self.ast_elements_dict['while']):
             self.create_infinite_loop_entity(node)
 
-        if isinstance(node, self.ast_elements_dict['if']):
+        if isinstance(node, self.ast_elements_dict['if']):       
             field_node = FieldNode("if", ast_node=node, is_loop=False)
             if self.entities.get("if") is None:
                 field_node.set_name("if1")
@@ -316,8 +315,15 @@ class PythonDW:
 
         if isinstance(node, self.ast_elements_dict['assign']) or \
                 isinstance(node, self.ast_elements_dict['augassign']):
-            node = node.value
-
+            
+            field_node = AssignNode("assign", ast_node=node)
+            if self.entities.get("assign") is None:
+                field_node.set_name("assign1")
+                self.entities["assign"] = [field_node]
+            else:
+                field_node.set_name('assign' + str(len(self.entities["assign"]) + 1))
+                self.entities["assign"].append(field_node)
+            
         if isinstance(node, self.ast_elements_dict['call']):
 
             if isinstance(node.func, self.ast_elements_dict['attribute']):
@@ -354,11 +360,13 @@ class PythonDW:
                     isinstance(node, self.ast_elements_dict['call']):
                 self.create_field_entity(node.value)
 
+
             if field_node != {}:
                 if self.entities.get("assign_field") is None:
                     self.entities["assign_field"] = [field_node]
                 else:
                     self.entities["assign_field"].append(field_node)
+
 
     def create_finite_loop_entity(self, node):
         is_loop_already_in_entities = self.check_loop_exists(node, 'for')
@@ -406,10 +414,10 @@ class PythonDW:
                                     nestled_loop)
                 loop_entity.add_relation(relation)
             elif isinstance(node, self.ast_elements_dict['if']):
-                continue
+                self.create_field_entity(node)
             else:
-                # self.create_field_entity(node) # i dont think we need this
-                continue
+                self.create_field_entity(node) # i dont think we need this
+
     """ACCESSING ENTITIES FUNCTIONS"""
 
     def get_entities_by_type(self, key):
@@ -417,6 +425,9 @@ class PythonDW:
             return self.entities[key]
         else:
             return []
+    
+    def verify_instance(self, node, type):
+        return isinstance(node, self.ast_elements_dict[type])
 
     """ Returning strings functions """
 

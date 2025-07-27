@@ -7,4 +7,5 @@ class EntityTypeEnum:
  PACKAGE = "PACKAGE"
  PARAMETER = "PARAMETER"
  LOOP = "LOOP"
+ ASSIGN = "ASSIGN"
 
