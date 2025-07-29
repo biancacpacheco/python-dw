@@ -27,7 +27,8 @@ class AstEntityTypeEnum:
          "dict": ast.Dict, \
          "constant": ast.Constant, \
          "binop": ast.BinOp, \
-         "subscript": ast.Subscript 
+         "subscript": ast.Subscript, \
+         "print": ast.Call 
          } 
 
     try:
