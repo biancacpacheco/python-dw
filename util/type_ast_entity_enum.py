@@ -27,11 +27,13 @@ class AstEntityTypeEnum:
          "dict": ast.Dict, \
          "constant": ast.Constant, \
          "binop": ast.BinOp, \
-         "subscript": ast.Subscript 
+         "subscript": ast.Subscript, \
+         "print": ast.Call, \
+         "return": ast.Return 
          } 
 
     try:
-        ast_entity_dict["print"] = ast.Print
+        ast_entity_dict["print"] = ast.Call
     except:
         pass    
 
