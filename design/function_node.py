@@ -98,10 +98,7 @@ class FunctionNode(entity.Entity):
             self.function_calls['callee'].append(callee)
             relation = Relation(self, RelationTypeEnum.ISCALLED, callee)
             self.add_relation(relation)
-            
 
-
-                
     """ INITIALIZATION FUNCTIONS HERE """
     
     def initialize_elements(self):

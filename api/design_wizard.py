@@ -136,7 +136,8 @@ class PythonDW:
                self.get_all_elements_file('subscript') + \
                self.get_all_elements_file('if') + \
                self.get_all_elements_file('expression') + \
-               self.get_all_elements_file('print')
+               self.get_all_elements_file('print') + \
+               self.get_all_elements_file('return')
 
     def get_all_classes(self):
         return self.get_all_elements_file('class')
@@ -301,10 +302,10 @@ class PythonDW:
         if isinstance(node, self.ast_elements_dict['for']):
             self.create_finite_loop_entity(node)
 
-        if isinstance(node, self.ast_elements_dict['while']):
+        elif isinstance(node, self.ast_elements_dict['while']):
             self.create_infinite_loop_entity(node)
 
-        if isinstance(node, self.ast_elements_dict['if']):       
+        elif isinstance(node, self.ast_elements_dict['if']):       
             field_node = FieldNode("if", ast_node=node, is_loop=False)
             if self.entities.get("if") is None:
                 field_node.set_name("if1")
@@ -312,19 +313,38 @@ class PythonDW:
             else:
                 field_node.set_name('if' + str(len(self.entities["if"]) + 1))
                 self.entities["if"].append(field_node)
+        
+        elif isinstance(node, self.ast_elements_dict['return']):       
+            field_node = FieldNode("return", ast_node=node, is_loop=False)
+            if self.entities.get("return") is None:
+                field_node.set_name("return1")
+                self.entities["return"] = [field_node]
+            else:
+                field_node.set_name('return' + str(len(self.entities["return"]) + 1))
+                self.entities["return"].append(field_node)
 
-        if isinstance(node, self.ast_elements_dict['assign']) or \
-                isinstance(node, self.ast_elements_dict['augassign']):
+        elif isinstance(node, self.ast_elements_dict['assign']):
             
             field_node = AssignNode("assign", ast_node=node)
             if self.entities.get("assign") is None:
                 field_node.set_name("assign1")
                 self.entities["assign"] = [field_node]
             else:
-                field_node.set_name('assign' + str(len(self.entities["assign"]) + 1))
-                self.entities["assign"].append(field_node)
+                if field_node not in self.entities["assign"]:
+                    field_node.set_name('assign' + str(len(self.entities["assign"]) + 1))
+                    self.entities["assign"].append(field_node)
+        
+        elif isinstance(node, self.ast_elements_dict['augassign']):
+            field_node = AssignNode("augassign", ast_node=node)
+            if self.entities.get("augassign") is None:
+                field_node.set_name("augassign1")
+                self.entities["augassign"] = [field_node]
+            else:
+                if field_node not in self.entities["augassign"]:
+                    field_node.set_name('augassign' + str(len(self.entities["augassign"]) + 1))
+                    self.entities["augassign"].append(field_node)
             
-        if isinstance(node, self.ast_elements_dict['call']):
+        elif isinstance(node, self.ast_elements_dict['call']):
 
             if isinstance(node.func, self.ast_elements_dict['attribute']):
                 field_node = FieldNode(node.func.attr, ast_node=node,
@@ -347,6 +367,7 @@ class PythonDW:
                 self.entities[field_node.get_name()] = [field_node]
             else:
                 self.entities[field_node.get_name()].append(field_node)
+
         else:
             if isinstance(node, self.ast_elements_dict['index']):
                 field_node = FieldNode("index", ast_node=node, is_index=True)
