@@ -50,10 +50,10 @@ class PythonDW:
         return entity
     
     def get_entity_by_ast_node(self, target_node):
-        for maybe_list in self.entities.values():
-            if not isinstance(maybe_list, list):
-                maybe_list = [maybe_list]
-            for entity in maybe_list:
+        for candidates in self.entities.values():
+            if not isinstance(candidates, list):
+                candidates = [candidates]
+            for entity in candidates:
                 if entity.ast_node is target_node:
                     return entity
         return None
